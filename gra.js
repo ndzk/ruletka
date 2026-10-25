@@ -21,7 +21,7 @@ const PAMIEC_PYTAN = 300;  // tyle ostatnich kategorii pamięta każdy gracz
 const LOKALNIE = /^(localhost|127\.0\.0\.1)$/.test(location.hostname);
 // wydaj.js wpisuje tu czas i skrót wydania. Host wpuszcza tylko gości z tą samą wersją: po aktualizacji strony stary host
 // z nowymi gośćmi (albo odwrotnie) mówiliby różnymi wersjami protokołu, a kontrola uczciwości brałaby różnice za oszustwo.
-const WERSJA = '202610252029-bcbec05f';
+const WERSJA = '202610252035-afdbd172';
 const PREFIKS = LOKALNIE ? 'ruletka-pl-test-' : 'ruletka-pl-';
 // Publiczna tablica ogłoszeń pokoi: temat na ntfy.sh (darmowe, bez konta, z CORS). Ogłaszają się tylko pokoje publiczne.
 const TABLICA = 'https://ntfy.sh/ruletka-pl-pokoje-' + (LOKALNIE ? 'test' : 'v1');
@@ -671,7 +671,9 @@ function pilnujOgloszenia() {
 // Lista pokoi z ostatnich 100 sekund; nowsze ogłoszenie tego samego pokoju zastępuje starsze. Dane z sieci są niezaufane.
 async function pobierzPokoje() {
   try {
-    const odp = await fetch(TABLICA + '/json?poll=1&since=100s', { cache: 'no-store' });
+    // bez limitu nieosiągalny ntfy.sh (filtr DNS, blokada adresu) trzymał listę i szybką grę 15-30 s, aż przeglądarka sama się podda
+    const odp = await fetch(TABLICA + '/json?poll=1&since=100s', { cache: 'no-store', signal: AbortSignal.timeout(8000) });
+    if (!odp.ok) return null;  // limit zapytań (429) to błąd, a nie pusta lista
     const pokoje = new Map();
     for (const linia of (await odp.text()).split('\n')) {
       let w, d;
@@ -680,7 +682,7 @@ async function pobierzPokoje() {
       if (w.event !== 'message' || d?.v !== 1 || !/^[A-Z]{4}$/.test(d.kod)) continue;
       pokoje.set(d.kod, {
         kod: d.kod, host: tekst(d.host, 16).trim() || 'Nieznajomy', zamkniety: !!d.zamkniety, gra: !!d.gra, czas: Number(w.time) || 0,
-        gracze: Math.min(12, Math.max(0, Number(d.gracze) || 0)), miejsca: Math.min(12, Math.max(2, Number(d.miejsca) || 6)),
+        gracze: Math.min(16, Math.max(0, Number(d.gracze) || 0)), miejsca: Math.min(16, Math.max(2, Number(d.miejsca) || 6)),
       });
     }
     return [...pokoje.values()].filter(p => !p.zamkniety && Date.now() / 1000 - p.czas < 100 && p.kod !== G?.kod).slice(0, 40);
