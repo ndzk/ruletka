@@ -21,7 +21,7 @@ const PAMIEC_PYTAN = 300;  // tyle ostatnich kategorii pamięta każdy gracz
 const LOKALNIE = /^(localhost|127\.0\.0\.1)$/.test(location.hostname);
 // wydaj.js wpisuje tu czas i skrót wydania. Host wpuszcza tylko gości z tą samą wersją: po aktualizacji strony stary host
 // z nowymi gośćmi (albo odwrotnie) mówiliby różnymi wersjami protokołu, a kontrola uczciwości brałaby różnice za oszustwo.
-const WERSJA = '202610252035-afdbd172';
+const WERSJA = '202610252044-e5d82f46';
 const PREFIKS = LOKALNIE ? 'ruletka-pl-test-' : 'ruletka-pl-';
 // Publiczna tablica ogłoszeń pokoi: temat na ntfy.sh (darmowe, bez konta, z CORS). Ogłaszają się tylko pokoje publiczne.
 const TABLICA = 'https://ntfy.sh/ruletka-pl-pokoje-' + (LOKALNIE ? 'test' : 'v1');
@@ -1177,7 +1177,6 @@ function odbierz(m) {
       zapamietajPytanie(S.q);
       if (S.nrKat > 1) {  // krillion: „new category” w pasku statusu przez 3,2 s
         nowaKategoriaDo = Date.now() + 3200;
-        kamera.ostrosc();
         setTimeout(() => S && rysujStatus(), 3220);
       }
     }
@@ -1226,7 +1225,6 @@ const imieGracza = id => S.gracze.find(g => g.id === id)?.imie ?? '?';
 const tabliczkaHosta = () => S.gracze[0]?.imie ?? 'host';
 
 function render(poprz) {
-  if (!$('#start').hidden) kamera.ostrosc();  // cięcie na nowe ujęcie
   $('#start').hidden = true;
   $('#gra').hidden = false;
   const { faza } = S, wGrze = ['gra', 'pekniecie', 'zmiana'].includes(faza);
@@ -1237,7 +1235,6 @@ function render(poprz) {
   $('#pokoj-kod').textContent = S.online ? (S.kod ?? '····') : '';
   // kamera nagrywa tylko w trakcie rundy, w poczekalni stoi w gotowości
   const nagrywa = faza !== 'lobby' && faza !== 'koniec';
-  if (nagrywa && !$('#faza-napis').classList.contains('rec')) kamera.nagrywaj();
   $('#faza-napis').textContent = nagrywa ? 'REC' : 'STBY';
   $('#faza-napis').classList.toggle('rec', nagrywa);
   $('#licznik-napis').textContent = wGrze || faza === 'odliczanie' ? 'żywych' : 'przy stole';
@@ -1687,65 +1684,11 @@ function iskry(el, kolor, ile) {
   }
 }
 
-// Wstrząs po strzale: kadr szarpie, ekran błyska, przez obraz przelatuje pas zakłóceń taśmy.
+// Wstrząs po strzale: kadr szarpie, ekran błyska.
 function wstrzas(mocny) {
   potrzasnij(document.body, mocny ? 'wstrzas-mocny' : 'wstrzas');
   setTimeout(() => document.body.classList.remove('wstrzas', 'wstrzas-mocny'), 900);
-  const el = $('#sciezka');
-  el.style.setProperty('--y', losuj(30, 60) + '%');
-  el.style.setProperty('--h', (mocny ? 22 : 12) + 'vh');
-  el.style.setProperty('--t', (mocny ? 600 : 350) + 'ms');
-  potrzasnij(el, 'teraz');
-  kamera.strzal(mocny);
 }
-
-// Kamera porywacza: linie obrazu drgają (co dwa półobrazy inny kawałek paska drgań w filtrze #filtr-hi8), autofokus szuka ostrości
-// po cięciu, balans bieli dochodzi do siebie po włączeniu nagrywania, a po błysku strzału przysłona się przymyka i powoli otwiera.
-const kamera = (() => {
-  const el = id => document.getElementById(id), ruch = matchMedia('(prefers-reduced-motion: reduce)');
-  const wylaczona = () => document.body.classList.contains('bez-hi8') || ruch.matches;
-  const BAZA = { r: .95, g: .93, b: .85 };
-  // wartość przebiegu w chwili t: punkty [ms, wartość], liniowo pomiędzy
-  const w = (pkt, t) => {
-    for (let i = 1; i < pkt.length; i++) if (t < pkt[i][0]) { const [t0, a] = pkt[i - 1], [t1, b] = pkt[i]; return a + ((b - a) * (t - t0)) / (t1 - t0); }
-    return pkt.at(-1)[1];
-  };
-  // rozmycie w px, jasność jako mnożnik, barwa od -1 (zimno) do 1 (ciepło)
-  function ustaw(rozmycie, jasnosc, barwa) {
-    el('hi8-ym').setAttribute('stdDeviation', `${(0.7 + rozmycie).toFixed(2)} ${(0.35 + rozmycie * 0.8).toFixed(2)}`);
-    el('hi8-yb').setAttribute('stdDeviation', `${(1.8 + rozmycie).toFixed(2)} ${(0.01 + rozmycie * 0.8).toFixed(2)}`);
-    el('hi8-r').setAttribute('slope', (BAZA.r * jasnosc * (1 + 0.14 * barwa)).toFixed(3));
-    el('hi8-g').setAttribute('slope', (BAZA.g * jasnosc * (1 + 0.03 * barwa)).toFixed(3));
-    el('hi8-b').setAttribute('slope', (BAZA.b * jasnosc * (1 - 0.2 * barwa)).toFixed(3));
-  }
-  let anim = 0;
-  function zagraj({ ostrosc = [[0, 0]], jasnosc = [[0, 1]], barwa = [[0, 0]] }) {
-    if (wylaczona()) return;
-    cancelAnimationFrame(anim);
-    const start = performance.now(), koniec = Math.max(ostrosc.at(-1)[0], jasnosc.at(-1)[0], barwa.at(-1)[0]);
-    const krok = t => {
-      const d = t - start;
-      ustaw(w(ostrosc, d), w(jasnosc, d), w(barwa, d));
-      if (d < koniec) anim = requestAnimationFrame(krok);
-    };
-    anim = requestAnimationFrame(krok);
-  }
-  // pasek drgań rozciągnięty na trzy wysokości kadru; co 80 ms filtr bierze inny jego kawałek
-  const drganie = el('hi8-drganie');
-  const rozmiar = () => { drganie.setAttribute('width', innerWidth); drganie.setAttribute('height', innerHeight * 3); };
-  rozmiar();
-  addEventListener('resize', rozmiar);
-  // setInterval, nie requestAnimationFrame: pętla co klatkę ekranu budziła główny wątek 60 razy na sekundę
-  setInterval(() => { if (!wylaczona() && document.visibilityState === 'visible') drganie.setAttribute('y', Math.round(-Math.random() * innerHeight * 2)); }, 80);
-  return {
-    // nagrywanie rusza: obraz zimny i nieostry, autofokus szuka, balans bieli dochodzi w półtorej sekundy
-    nagrywaj: () => zagraj({ ostrosc: [[0, 3.5], [260, 0.3], [430, 1.6], [650, 0]], barwa: [[0, -1], [1500, 0]], jasnosc: [[0, 1.2], [700, 1]] }),
-    // nowe ujęcie albo nowa kategoria: operator poprawia ostrość
-    ostrosc: () => zagraj({ ostrosc: [[0, 0], [160, 1.8], [340, 0.3], [520, 0.9], [720, 0]] }),
-    // błysk wystrzału prześwietla obraz, przysłona przymyka się za mocno i powoli otwiera
-    strzal: mocny => zagraj({ jasnosc: [[0, 1], [50, mocny ? 2.4 : 1.9], [220, mocny ? 0.45 : 0.6], [mocny ? 1600 : 1100, 1]], ostrosc: [[0, 0], [90, 1.2], [450, 0]] }),
-  };
-})();
 
 // Ponownie odpala animację CSS przypiętą do klasy (domyślnie potrząśnięcie).
 function potrzasnij(el, klasa = 'trzes') { el.classList.remove(klasa); void el.offsetWidth; el.classList.add(klasa); }
@@ -1860,70 +1803,6 @@ function rysujStatystyki() {
   ]));
 }
 
-// Chrome nie przerysowuje obrazków doczytanych pod filtrem SVG (tekstura stołu, rewolwer), dopóki filtr się nie zmieni,
-// więc po każdym wczytanym obrazku drobna zmiana atrybutu wymusza nowy przebieg filtra.
-let filtrCzeka = false;
-function odswiezFiltr() {
-  if (filtrCzeka) return;
-  filtrCzeka = true;
-  requestAnimationFrame(() => {
-    filtrCzeka = false;
-    const o = document.querySelector('#filtr-hi8 feOffset');
-    o.setAttribute('dx', o.getAttribute('dx') === '2.5' ? '2.501' : '2.5');
-  });
-}
-
-// Taśma: co jakiś czas pas utraty ścieżki przejeżdża przez obraz, a pojedyncze ubytki błyskają białą kreską.
-function zaklocenia() {
-  const spokoj = () => document.body.classList.contains('bez-hi8') || matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const sciezka = () => {
-    if (!spokoj()) {
-      const el = $('#sciezka');
-      el.style.setProperty('--y', losuj(5, 85) + '%');
-      el.style.setProperty('--h', losuj(3, 9) + 'vh');
-      el.style.setProperty('--t', losuj(250, 500) + 'ms');
-      potrzasnij(el, 'teraz');
-    }
-    setTimeout(sciezka, losuj(8000, 24000));
-  };
-  // jeden stały element zapalany i gaszony: wstawianie i usuwanie nowego zmieniało drzewo warstw kompozytora
-  // i ciągnęło kilkanaście layoutów na sekundę (zmierzone), choć ubytek błyska raz na sekundę-dwie
-  const el = $('#ubytek');
-  const ubytek = () => {
-    if (!spokoj()) {
-      Object.assign(el.style, { top: losuj(0, 100) + '%', left: losuj(0, 90) + '%', width: losuj(1.5, 12) + '%', opacity: 1 });
-      setTimeout(() => { el.style.opacity = 0; }, losuj(40, 110));
-    }
-    setTimeout(ubytek, losuj(300, 2800));
-  };
-  setTimeout(sciezka, 5000);
-  ubytek();
-}
-
-// Słaby telefon: mediana klatki z 4 s po wejściu do pokoju dłuższa niż 30 ms (poniżej ~33 kl./s) wyłącza filtr Hi8.
-function pilnujPlynnosci(odswiez) {
-  if (pamiec.daj('hi8') !== null || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  const czekaj = () => {
-    if ($('#gra').hidden) return setTimeout(czekaj, 1000);
-    const klatki = [];
-    let poprz = performance.now();
-    const mierz = t => {
-      klatki.push(t - poprz);
-      poprz = t;
-      if (klatki.length < 240 && document.visibilityState === 'visible') return requestAnimationFrame(mierz);
-      klatki.sort((a, b) => a - b);
-      const mediana = klatki[klatki.length >> 1];
-      if (mediana > 30 && pamiec.daj('hi8') === null) {
-        pamiec.zapisz('hi8', '0');
-        odswiez();
-        komunikat('Wyłączyłem filtr kamery, bo obraz się ciął. Włączysz go przyciskiem Hi8.');
-      }
-    };
-    setTimeout(() => requestAnimationFrame(mierz), 1500);
-  };
-  czekaj();
-}
-
 function init() {
   if (window.top !== window.self) { try { window.top.location.replace(location.href); } catch { document.body.hidden = true; } return; }
   rysujRewolwerSvg();
@@ -1938,21 +1817,8 @@ function init() {
   };
   czasKamery();
   setInterval(czasKamery, 1000);
-  zaklocenia();
   // pył w snopie światła żarówki: drobinki dryfują powoli, każda własnym torem
   $('#pyl').append(...Array.from({ length: 34 }, () => h('i', { style: `left:${losuj(30, 70)}%;top:${losuj(4, 96)}%;--dx:${losuj(-40, 40)}px;--dy:${losuj(-60, 30)}px;--t:${losuj(9, 22)}s;--o:${losuj(0.25, 0.8)};animation-delay:${-losuj(0, 22)}s;width:${losuj(1, 2.6)}px` })));
-  document.addEventListener('load', e => { if (/^(img|image)$/i.test(e.target.tagName)) odswiezFiltr(); }, true);
-  for (const plik of ['sciana.jpg', 'podloga.jpg', 'stol.jpg']) Object.assign(new Image(), { onload: odswiezFiltr, src: 'zasoby/' + plik });
-  // filtr kamery Hi8 można wyłączyć (słabszy telefon); wybór zostaje zapamiętany
-  const hi8 = () => {
-    const wl = pamiec.daj('hi8') !== '0';
-    document.body.classList.toggle('bez-hi8', !wl);
-    $('#hi8').ariaPressed = String(wl);
-    $('#hi8-start').textContent = `Obraz z kamery Hi8: ${wl ? 'włączony' : 'wyłączony'}`;
-  };
-  hi8();
-  pilnujPlynnosci(hi8);
-  $('#hi8').onclick = $('#hi8-start').onclick = () => { pamiec.zapisz('hi8', pamiec.daj('hi8') === '0' ? '1' : '0'); hi8(); };
   addEventListener('resize', () => { if (S) { rysujMiejsca(); rysujRewolwer(S); } });
   rysujAwatary();
   rysujStatystyki();

@@ -31,28 +31,7 @@
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<!-- obraz z kamery Hi8: linie obrazu drgają w poziomie (błąd podstawy czasu taśmy: pasek drganie.png rozciągnięty na cały kadr,
-     przesuwany w pionie przez gra.js), filtr rozmywa kolor w poziomie i przesuwa go w prawo, wyostrza krawędzie jasności, czerń jest mleczna.
-     Szum generowany w filtrze (feTurbulence) i poświata kosztowały 2-4x więcej niż cały filtr, więc szum koloru leży nad obrazem (ziarno.webp).
-     Rozmycie ma w pionie 0.01 zamiast 0: Chrome przy zerze w jednej osi oddaje pusty obraz. Atrybuty z id zmienia kamera w gra.js. -->
 <svg class="filtry" aria-hidden="true">
-  <filter id="filtr-hi8" x="0" y="0" width="100%" height="100%" color-interpolation-filters="sRGB">
-    <feImage id="hi8-drganie" href="zasoby/drganie.png" x="0" y="0" width="1920" height="3240" preserveAspectRatio="none" result="drganie"/>
-    <feDisplacementMap in="SourceGraphic" in2="drganie" scale="3" xChannelSelector="R" yChannelSelector="G" result="obraz"/>
-    <feColorMatrix in="obraz" values=".299 .587 .114 0 0  .299 .587 .114 0 0  .299 .587 .114 0 0  0 0 0 1 0" result="y"/>
-    <feGaussianBlur id="hi8-ym" in="y" stdDeviation=".7 .35" result="ym"/>
-    <feGaussianBlur id="hi8-yb" in="y" stdDeviation="1.8 .01" result="yb"/>
-    <feComposite in="ym" in2="yb" operator="arithmetic" k2="1.5" k3="-.5" result="yy"/>
-    <feColorMatrix in="obraz" values=".3505 -.2935 -.057 0 .5  -.1495 .2065 -.057 0 .5  -.1495 -.2935 .443 0 .5  0 0 0 1 0" result="c"/>
-    <feGaussianBlur in="c" stdDeviation="3.2 .4" result="cb"/>
-    <feOffset in="cb" dx="2.5" result="cd"/>
-    <feComposite in="yy" in2="cd" operator="arithmetic" k2="1" k3="2.3" k4="-1.15" result="rgb"/>
-    <feComponentTransfer in="rgb">
-      <feFuncR id="hi8-r" type="linear" slope=".95" intercept=".05"/>
-      <feFuncG id="hi8-g" type="linear" slope=".93" intercept=".052"/>
-      <feFuncB id="hi8-b" type="linear" slope=".85" intercept=".06"/>
-    </feComponentTransfer>
-  </filter>
   <!-- papierowe torby zakładników (twarze.js): zmięty szary papier, światło żarówki z góry, ciemniejsze boki -->
   <pattern id="papier" patternUnits="userSpaceOnUse" width="100" height="110"><image href="zasoby/torba.webp" width="100" height="110" preserveAspectRatio="xMidYMid slice"/></pattern>
   <radialGradient id="cieniowanie-torby" cx=".5" cy="0" r="1.05">
@@ -63,7 +42,7 @@
 
 <div id="kadr">
 <div id="tlo" aria-hidden="true">
-  <div class="podloga"></div><div class="plesn"></div><div class="smuga"></div>
+  <div class="podloga"></div><div class="plesn"></div>
   <div class="wahadlo"><div class="stozek"><div id="pyl" class="pyl"></div></div><div class="zarowka"></div></div>
   <!-- ślady po poprzednich: kreski liczące dni wydrapane w tynku i kartka z regułami porywacza przybita do ściany -->
   <svg class="kreski" viewBox="0 0 160 120" aria-hidden="true">
@@ -117,7 +96,6 @@
           <button id="dolacz" class="przycisk">Dołącz</button>
         </div>
         <p id="blad" class="blad" role="status"></p>
-        <p class="drobne"><button id="hi8-start" class="link" type="button"></button></p>
       </div>
     </div>
 
@@ -137,7 +115,6 @@
     </div>
     <div class="ikony">
       <button id="menu" class="ikona" title="Jak grać" aria-label="Jak grać">?</button>
-      <button id="hi8" class="ikona tekstowa" title="Obraz z kamery Hi8" aria-label="Filtr kamery Hi8" aria-pressed="true">Hi8</button>
       <button id="reakcje-przycisk" class="ikona" title="Reakcje" aria-label="Pokaż reakcje" aria-expanded="false"><svg viewBox="0 0 20 20"><circle cx="10" cy="10" r="7.5"/><path d="M6.8 11.8c1.6 2 4.8 2 6.4 0"/><path d="M7.4 7.8v.6M12.6 7.8v.6"/></svg></button>
       <button id="dzwiek" class="ikona" title="Dźwięk" aria-label="Włącz lub wycisz dźwięk"><svg viewBox="0 0 20 20"><path d="M3.5 7.5h3l4-3.5v12l-4-3.5h-3z"/><path class="fala" d="M13.5 7.2c1.2 1.6 1.2 4 0 5.6M15.8 5.2c2.3 2.8 2.3 6.8 0 9.6"/><path class="krzyzyk" d="M13.5 7.5l4 5M17.5 7.5l-4 5"/></svg></button>
       <button id="czat-przycisk" class="ikona" title="Czat" aria-label="Pokaż lub schowaj czat"><svg viewBox="0 0 20 20"><path d="M3.5 4.5h13v9h-7l-4 3v-3h-2z"/></svg></button>
@@ -220,9 +197,7 @@
 </main>
 </div>
 
-<!-- taśma: szum, kolorowe ziarno w cieniach, linie obrazu, przewijający się pas przydźwięku, zakłócenia głowic na dole kadru, czasem utrata ścieżki -->
 <div class="blysk-ekranu" aria-hidden="true"></div>
-<div class="tasma" aria-hidden="true"><div class="szum"></div><div class="ziarno"></div><div class="linie"></div><div class="przydzwiek"></div><div class="glowice"></div><div id="sciezka" class="sciezka"></div><i id="ubytek" class="ubytek"></i></div>
 
 <dialog id="zasady">
   <h2>Jak grać</h2>
