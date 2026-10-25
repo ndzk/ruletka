@@ -1,0 +1,695 @@
+/* Czcionki z własnego serwera (SIL OFL, Special Elite Apache 2.0; licencje w zasoby/czcionki). Te same pliki i zakresy znaków
+   co z Google Fonts, tylko Archivo bez szerokości powyżej 100% (gra ich nie używa; przy szerokościach do 100% litery są identyczne
+   co do piksela). Covered By Your Grace ma tylko litery kartki z regułami: po zmianie jej tekstu pobierz nowy plik z
+   https://fonts.googleapis.com/css2?family=Covered+By+Your+Grace&text=<wszystkie litery kartki ze spacją> (README, „Wydajność”). */
+@font-face { font-family: 'Archivo'; font-style: normal; font-weight: 400 800; font-stretch: 62% 100%; font-display: swap; src: url(zasoby/czcionki/archivo-vietnamese.woff2) format('woff2'); unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB; }
+@font-face { font-family: 'Archivo'; font-style: normal; font-weight: 400 800; font-stretch: 62% 100%; font-display: swap; src: url(zasoby/czcionki/archivo-latin-ext.woff2) format('woff2'); unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF; }
+@font-face { font-family: 'Archivo'; font-style: normal; font-weight: 400 800; font-stretch: 62% 100%; font-display: swap; src: url(zasoby/czcionki/archivo-latin.woff2) format('woff2'); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: 'Caveat Brush'; font-style: normal; font-weight: 400; font-display: swap; src: url(zasoby/czcionki/caveat-brush-latin-ext.woff2) format('woff2'); unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF; }
+@font-face { font-family: 'Caveat Brush'; font-style: normal; font-weight: 400; font-display: swap; src: url(zasoby/czcionki/caveat-brush-latin.woff2) format('woff2'); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: 'Special Elite'; font-style: normal; font-weight: 400; font-display: swap; src: url(zasoby/czcionki/special-elite-latin-ext.woff2) format('woff2'); unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF; }
+@font-face { font-family: 'Special Elite'; font-style: normal; font-weight: 400; font-display: swap; src: url(zasoby/czcionki/special-elite-latin.woff2) format('woff2'); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: 'VT323'; font-style: normal; font-weight: 400; font-display: swap; src: url(zasoby/czcionki/vt323-vietnamese.woff2) format('woff2'); unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB; }
+@font-face { font-family: 'VT323'; font-style: normal; font-weight: 400; font-display: swap; src: url(zasoby/czcionki/vt323-latin-ext.woff2) format('woff2'); unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF; }
+@font-face { font-family: 'VT323'; font-style: normal; font-weight: 400; font-display: swap; src: url(zasoby/czcionki/vt323-latin.woff2) format('woff2'); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: 'Covered By Your Grace'; font-style: normal; font-weight: 400; font-display: swap; src: url(zasoby/czcionki/covered-tekst.woff2) format('woff2'); unicode-range: U+20, U+2e, U+3d, U+41, U+44, U+4c, U+4e, U+53, U+57, U+59-5a, U+61-6a, U+6d-70, U+72-75, U+77, U+79-7a, U+142; }
+:root {
+  --tlo: #0d0d0b;
+  --powierzchnia: #131311;
+  --linia: #2a2925;
+  --linia2: #46433c;
+  --tekst: #e9e5d9;
+  --szary: #9c978b;
+  --ciemny: #6d6960;
+  --rdza: #a8321f;      /* jedyny mocny kolor: główny przycisk, nagrywanie, niebezpieczeństwo */
+  --rdza2: #c03c26;
+  --zarowka: #e2cf86;   /* ciepłe światło: ja, aktywne pole */
+  --czerwien: #b8281c;
+  --zloto: #d9b44a;
+  --atrament: #1f1c16;
+  --ui: 'Archivo', system-ui, sans-serif;
+  --osd: 'VT323', ui-monospace, monospace;
+  --notatka: 'Special Elite', 'Courier New', monospace;
+  --reka: 'Caveat Brush', 'Comic Sans MS', cursive;          /* marker porywacza: imiona na taśmie, napisy na ścianie */
+  --bazgroly: 'Covered By Your Grace', 'Comic Sans MS', cursive;
+  --papier: #d8ceb2;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html, body { margin: 0; height: 100%; }
+body {
+  font: 400 1rem/1.4 var(--ui);
+  color: var(--tekst); background: var(--tlo); overflow: hidden;
+  -webkit-tap-highlight-color: transparent;
+}
+button, input { font: inherit; color: inherit; }
+button { cursor: pointer; }
+button:disabled { opacity: .4; cursor: not-allowed; }
+:focus-visible { outline: 2px solid var(--zarowka); outline-offset: 2px; }
+h1, h2 { margin: 0; }
+.filtry { position: absolute; width: 0; height: 0; }
+.szary { color: var(--szary); }
+
+/* ---------- obraz z kamery: wszystko pod filtrem Hi8 ---------- */
+#kadr { position: fixed; inset: 0; filter: url(#filtr-hi8); }
+* { scrollbar-width: thin; scrollbar-color: rgba(216, 206, 178, .28) transparent; }  /* systemowy pasek przewijania wybijał z nagrania */
+body.bez-hi8 #kadr { filter: none; }
+body.bez-hi8 .tasma { display: none; }
+
+/* ---------- piwnica: tekstury Poly Haven (CC0) przyciemnione mnożeniem przez światło żarówki ---------- */
+#tlo {
+  position: absolute; inset: 0; overflow: hidden; background-color: #0b0c0a;
+  background-image: url(zasoby/sciana.jpg), radial-gradient(ellipse 60% 70% at 50% 18%, #5d5a4a, #2e2d26 45%, #121210 80%);
+  background-size: 560px, 100% 100%;
+  background-blend-mode: multiply;
+}
+/* betonowa posadzka w perspektywie; oko w dolnej krawędzi, przy tej wysokości i kącie górna krawędź wypada na 59% od dołu */
+.podloga {
+  position: absolute; left: -80%; right: -80%; bottom: 0; height: 203vh; transform-origin: 50% 100%; transform: perspective(100vh) rotateX(45deg);
+  background-image: radial-gradient(ellipse 30% 75% at 50% 100%, #a39a7c, #4a463a 50%, #161613 85%), url(zasoby/podloga.jpg);
+  background-size: 100% 100%, 340px; background-blend-mode: multiply;
+}
+.podloga::before { content: ''; position: absolute; left: 0; right: 0; top: 0; height: 6%; background: linear-gradient(rgba(0, 0, 0, .8), transparent); }
+.plesn {
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse 22% 26% at 0 100%, rgba(22, 32, 16, .85), transparent 70%),
+    radial-gradient(ellipse 18% 22% at 100% 92%, rgba(18, 28, 14, .8), transparent 70%),
+    radial-gradient(ellipse 9% 40% at 22% 0, rgba(46, 38, 22, .45), transparent 80%),
+    radial-gradient(ellipse 6% 34% at 71% 0, rgba(44, 36, 20, .4), transparent 80%);
+}
+/* goła żarówka na kablu, kołysze się razem ze stożkiem światła */
+.wahadlo { position: absolute; left: 50%; top: 0; width: 0; height: 100%; transform-origin: 0 0; animation: wahadlo 6s ease-in-out infinite alternate; }
+.zarowka {
+  position: absolute; left: -22px; top: 0; width: 44px; height: 110px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 44 110'%3E%3Cline x1='22' y1='0' x2='22' y2='62' stroke='%23090908' stroke-width='2.5'/%3E%3Crect x='16' y='60' width='12' height='14' rx='2' fill='%232a2722'/%3E%3Cpath d='M15 74C8 80 7 92 14 99C18 103 26 103 30 99C37 92 36 80 29 74Z' fill='%23fff6c8' fill-opacity='.9'/%3E%3Cpath d='M19 92 21 82H23L25 92' stroke='%23ffb34a' stroke-width='1.6' fill='none'/%3E%3C/svg%3E") no-repeat center top / contain;
+  filter: drop-shadow(0 0 14px rgba(255, 240, 170, .8)) drop-shadow(0 0 40px rgba(220, 210, 120, .45));
+  animation: migotanie 11s infinite;
+}
+/* smuga matrycy CCD: jasna żarówka w kadrze zostawia pionową jasną kreskę przez cały obraz. Idzie w bok razem z żarówką
+   (88 px pod zaczepem, wahadło ±6° = ±9 px). Wysoka na 300vh obracana smuga kosztowała filtr tyle, co cały filtr. */
+.smuga {
+  position: absolute; left: 50%; top: 0; width: 4px; height: 100%; margin-left: -2px;
+  background: linear-gradient(90deg, transparent, rgba(255, 246, 210, .07) 30% 70%, transparent);
+  animation: smuga 6s ease-in-out infinite alternate, migotanie 11s infinite;
+}
+@keyframes smuga { from { translate: 9.2px 0; } to { translate: -9.2px 0; } }
+body:has(#start:not([hidden])) .smuga { left: 64%; }
+body.bez-hi8 .smuga { display: none; }
+.stozek {
+  position: absolute; left: max(-60vw, -650px); top: 96px; width: min(120vw, 1300px); height: calc(100vh - 96px);
+  background: radial-gradient(ellipse 42% 75% at 50% 0, rgba(225, 215, 140, .2), rgba(200, 190, 110, .06) 55%, transparent 80%);
+  clip-path: polygon(48% 0, 52% 0, 90% 100%, 10% 100%);
+  mix-blend-mode: screen; animation: migotanie 11s infinite;
+}
+.kreski { position: absolute; left: 6%; top: 24%; width: clamp(110px, 12vw, 190px); opacity: .5; mix-blend-mode: screen; rotate: -2deg; }
+.kreski path { fill: none; stroke: #b9b2a0; stroke-width: 2.4; stroke-linecap: round; filter: drop-shadow(1px 1px 0 rgba(0, 0, 0, .9)); }
+.kartka-regul {
+  position: absolute; right: 2.5%; top: 11%; width: clamp(140px, 12vw, 200px); aspect-ratio: 420 / 583; padding: 2.7em 1.1em 0 2em; box-sizing: border-box; rotate: 4deg;
+  background: url(zasoby/kartka.webp) center / 100% 100% no-repeat; filter: brightness(.55) sepia(.2) drop-shadow(0 6px 10px rgba(0, 0, 0, .7));
+  font-family: var(--bazgroly); color: #2a1c12; line-height: 1.25; font-size: clamp(12px, 1.15vw, 17px);
+}
+.kartka-regul::before { content: ''; position: absolute; left: 48%; top: 3%; width: 9px; height: 9px; border-radius: 50%; background: radial-gradient(circle at 35% 35%, #9b9488, #3a3630 70%); box-shadow: 0 2px 2px rgba(0, 0, 0, .8); }
+.kartka-regul b { display: block; font-weight: 400; font-size: 1.5em; letter-spacing: .08em; text-decoration: underline 2px; }
+.kartka-regul ol { margin: .3em 0 0; padding-left: 1.1em; }
+.kartka-regul li { margin-bottom: .2em; }
+.pyl { position: absolute; inset: 0; }
+.pyl i { position: absolute; aspect-ratio: 1; border-radius: 50%; background: #fff6d8; opacity: 0; animation: pyl var(--t, 14s) linear infinite; }
+@keyframes pyl { 0% { opacity: 0; transform: none; } 15% { opacity: var(--o, .6); } 85% { opacity: var(--o, .6); } 100% { opacity: 0; transform: translate(var(--dx), var(--dy)); } }
+/* na starcie po lewej stoi tytuł, więc kreski idą pod kartkę */
+body:has(#start:not([hidden])) .kreski { left: auto; right: 3%; top: 64%; }
+body:has(#start:not([hidden])) .kartka-regul { right: 5%; top: 15%; width: clamp(150px, 15vw, 240px); }
+@media (max-width: 999px), (max-height: 560px) { .kreski, .kartka-regul { display: none; } }
+.winieta { position: absolute; inset: 0; background: radial-gradient(ellipse 70% 66% at 50% 42%, transparent 25%, rgba(0, 0, 0, .88) 100%); }
+/* na ekranie startowym światło pada na prawo od tekstu, w grze na środek stołu */
+body:has(#start:not([hidden])) .wahadlo { left: 64%; }
+@keyframes wahadlo { from { rotate: -6deg; } to { rotate: 6deg; } }
+@keyframes migotanie { 0%, 16%, 19%, 47%, 49.5%, 51%, 100% { opacity: 1; } 17.5% { opacity: .55; } 48% { opacity: .1; } 50% { opacity: .75; } }
+
+/* ---------- OSD kamery: biały pikselowy napis z czarną obwódką, jak w Handycamie ---------- */
+.osd {
+  position: absolute; inset: 0; z-index: 20; pointer-events: none;
+  font-family: var(--osd); font-size: clamp(20px, 2.3vw, 30px); line-height: 1; letter-spacing: .03em; color: #f3f0e4;
+  text-shadow: 2px 0 #000, -2px 0 #000, 0 2px #000, 0 -2px #000, 2px 2px #000, 0 0 .35em rgba(255, 248, 225, .3);  /* biel napisu trochę się rozlewa */
+}
+#start .osd { position: fixed; }
+.osd > * { position: absolute; }
+.osd-tryb { top: clamp(14px, 3vh, 30px); left: clamp(16px, 3vw, 40px); }
+.osd-tryb.rec::before { content: '● '; color: #e2261a; animation: mrug 1s steps(1) infinite; }
+.osd-licznik { top: clamp(14px, 3vh, 30px); left: calc(clamp(16px, 3vw, 40px) + 4.2em); }
+.osd-data { bottom: clamp(14px, 3vh, 30px); right: clamp(16px, 3vw, 40px); white-space: pre; text-align: right; }
+.osd-bateria {
+  top: calc(clamp(14px, 3vh, 30px) + .12em); right: clamp(16px, 3vw, 40px); display: flex; gap: 2px; width: 1.6em; height: .72em; padding: 2px;
+  border: 2px solid currentColor; box-shadow: 0 0 0 2px #000, inset 0 0 0 1px #000;
+}
+.osd-bateria::after { content: ''; position: absolute; right: -6px; top: 25%; width: 3px; height: 50%; background: currentColor; box-shadow: 0 0 0 1px #000; }
+.osd-bateria i { flex: 1; background: currentColor; }
+.osd-bateria i:last-child { animation: mrug 2s steps(1) infinite; }
+
+/* ---------- wspólne ---------- */
+.przycisk {
+  min-height: 44px; padding: .62em 1.1em .58em; border: 0; border-radius: 3px;
+  background: linear-gradient(#26262a, #141416 55%, #0c0c0e); box-shadow: inset 0 1px 0 rgba(255, 255, 255, .12), inset 0 -2px 0 rgba(0, 0, 0, .5), 0 3px 6px rgba(0, 0, 0, .6);
+  font-weight: 800; font-stretch: 72%; font-size: 1rem; line-height: 1.1; letter-spacing: clamp(.04em, 1vw - .2em, .14em); text-transform: uppercase; color: #ece8dc;
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, .9), 0 1px 0 rgba(255, 255, 255, .28);  /* litery wytłoczone w taśmie */
+  transition: filter .15s;
+}
+.przycisk:hover:not(:disabled) { filter: brightness(1.25); }
+.przycisk:active:not(:disabled) { translate: 0 1px; box-shadow: inset 0 1px 0 rgba(255, 255, 255, .08), 0 1px 2px rgba(0, 0, 0, .6); }
+.przycisk.glowny { background: linear-gradient(#b42a1a, #8d1e12 55%, #6e150c); color: #fbefe0; rotate: -.4deg; }
+.link { background: none; border: 0; padding: .3em 0; color: var(--szary); font-size: .875rem; text-decoration: underline; text-underline-offset: 3px; text-decoration-color: var(--linia2); }
+.link:hover:not(:disabled) { color: var(--tekst); text-decoration-color: currentColor; }
+input {
+  width: 100%; min-height: 44px; padding: .6em .8em; border: 1px solid var(--linia2); border-radius: 2px;
+  background: rgba(8, 8, 7, .85); color: var(--tekst); font-weight: 500; font-size: 1rem;
+}
+input::placeholder { color: var(--ciemny); }
+input:focus-visible { outline: none; border-color: var(--zarowka); }
+.znak h1 {
+  /* jak napis z generatora tytułów w kamerze: duże piksele i twardy cień */
+  font-family: var(--osd); font-weight: 400; line-height: .8; letter-spacing: .02em; color: #f3f0e4;
+  font-size: clamp(4.4rem, 12vw, 7.6rem); text-shadow: .05em .05em 0 #000;
+}
+
+/* ---------- ekran startowy ---------- */
+.ekran { position: relative; height: 100%; }
+#start { overflow-y: auto; }
+.start-uklad {
+  min-height: 100%; display: grid; grid-template-columns: minmax(0, 440px) 1fr; gap: 0 40px; align-items: end; align-content: end;
+  padding: clamp(80px, 13vh, 130px) clamp(20px, 7vw, 110px) clamp(96px, 15vh, 140px);
+}
+.start-kolumna { grid-column: 1; display: flex; flex-direction: column; }
+.start-kolumna > .grupa {
+  position: relative; margin-top: 18px; padding: 22px 22px 20px; border: 0; rotate: -.5deg; color: var(--atrament);
+  background: url(zasoby/torba.webp) 0 0 / 220px, linear-gradient(175deg, #e3dac2, #cdc2a3);
+  background-blend-mode: soft-light, normal; box-shadow: 0 12px 26px rgba(0, 0, 0, .65);
+}
+.start-kolumna > .grupa + .grupa { rotate: .6deg; margin-top: 14px; }
+.start-kolumna > .grupa::before {
+  content: ''; position: absolute; top: -9px; left: 50%; width: 96px; height: 22px; translate: -50% 0; rotate: -2deg;
+  background: url(zasoby/tasma.webp) center / 100% 100%; filter: drop-shadow(0 1px 1px rgba(0, 0, 0, .45));
+}
+.start-kolumna > .grupa .etykieta-wiersz label { font-family: var(--notatka); font-weight: 400; font-size: .95rem; color: #5a4632; letter-spacing: .04em; }
+.start-kolumna > .grupa .link { color: #5a4632; text-decoration-color: rgba(90, 70, 50, .5); }
+.start-kolumna > .grupa .link:hover:not(:disabled) { color: #1f1c16; }
+.start-kolumna > .grupa input:not([type='checkbox']) {
+  background: transparent; border: 0; border-bottom: 2px solid rgba(40, 28, 16, .55); border-radius: 0; color: #1c1611;
+  font-family: var(--reka); font-size: 1.5rem; padding: .1em .2em 0;
+}
+.start-kolumna > .grupa input::placeholder { color: rgba(60, 45, 30, .45); }
+.start-kolumna > .grupa input:focus-visible { border-bottom-color: #8d1e12; }
+.start-kolumna > .grupa .dolacz input { font-family: var(--osd); font-size: 1.8rem; }
+.start-kolumna > .grupa .statystyki { color: #5a4632; font-family: var(--notatka); font-size: .78rem; }
+.start-kolumna > .grupa .statystyki b { color: #1c1611; }
+.start-kolumna > .grupa .przelacznik { color: #3e3022; }
+.start-kolumna > .grupa .blad { color: #6a2a1c; }
+.awatary button { width: 46px; height: 54px; }
+.awatary button span svg { width: 36px; height: auto; margin-top: 4px; }
+.awatary button.wybrany { border-bottom-color: #8d1e12; }
+.awatary button.wybrany span svg { filter: drop-shadow(0 0 0 #8d1e12) drop-shadow(0 2px 3px rgba(0, 0, 0, .5)); scale: 1.12; }
+.awatary small { color: #5a4632; }
+.znak p { margin: .9em 0 0; max-width: 36ch; color: var(--szary); line-height: 1.45; }
+.znak .ile-pytan { margin-top: .5em; font-size: .8rem; color: var(--ciemny); }
+.grupa { display: flex; flex-direction: column; gap: 12px; margin-top: 24px; padding-top: 22px; border-top: 1px solid var(--linia); }
+.etykieta-wiersz { display: flex; justify-content: space-between; align-items: baseline; }
+.etykieta-wiersz label { font-size: .875rem; font-weight: 600; color: var(--szary); }
+.awatary { display: flex; flex-wrap: wrap; gap: 0 2px; margin: 0 -4px; }
+.awatary button {
+  position: relative; width: 44px; height: 46px; padding: 0 0 4px; border: 0; border-bottom: 2px solid transparent; background: none;
+  font-size: 1.45rem; line-height: 1;
+}
+.awatary button span { display: block; }
+.awatary button.zablokowany { opacity: 1; }
+.awatary button.zablokowany span { filter: grayscale(1) brightness(.35) opacity(.6); }
+.awatary small { position: absolute; left: 0; right: 0; bottom: 3px; font-size: .58rem; font-weight: 700; color: var(--szary); }
+.statystyki { display: flex; flex-wrap: wrap; gap: 4px 16px; font-size: .8rem; color: var(--szary); }
+.statystyki b { font-weight: 650; color: var(--tekst); }
+.przelacznik { display: flex; align-items: center; gap: .6em; font-size: .875rem; color: var(--szary); cursor: pointer; }
+.przelacznik input { width: 18px; height: 18px; min-height: 0; margin: 0; accent-color: var(--rdza); }
+.dwa { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.dolacz { display: flex; gap: 10px; }
+.dolacz input { flex: 1; min-width: 0; padding: .15em .6em; font-family: var(--osd); font-size: 1.7rem; letter-spacing: .3em; text-transform: uppercase; }
+.dolacz .przycisk { flex: none; min-width: 7em; }
+.blad { margin: 0; min-height: 1.3em; font-size: .875rem; color: var(--szary); }
+.drobne { margin: 0; }
+.zaproszenie { display: flex; flex-direction: column; gap: 12px; margin-top: 24px; padding: 16px; border: 1px solid var(--rdza); background: rgba(20, 8, 6, .55); }
+.zaproszenie p { margin: 0; }
+.zaproszenie b { font-family: var(--osd); font-weight: 400; font-size: 1.8rem; letter-spacing: .12em; }
+.lista-pokoi { grid-column: 1; margin-top: 28px; }
+.lista-pokoi h2 { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px; font-size: .875rem; font-weight: 600; color: var(--szary); }
+.lista-pokoi h2 small { font-weight: 400; }
+.pokoje { max-height: 30vh; overflow-y: auto; border-top: 1px solid var(--linia); }
+.pokoje .szary { margin: 10px 0 0; font-size: .875rem; line-height: 1.45; }
+.pokoj { display: grid; grid-template-columns: 4.2em 1fr auto; align-items: center; gap: 12px; padding: 9px 0; border-bottom: 1px solid var(--linia); }
+.pokoj-kod { font-family: var(--osd); font-weight: 400; font-size: 1.6rem; letter-spacing: .08em; }
+.pokoj-opis { display: flex; flex-direction: column; min-width: 0; }
+.pokoj-opis span { font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.pokoj-opis small { font-size: .8rem; color: var(--szary); }
+.pokoj-opis small.gra { color: var(--ciemny); }
+.link-pokoju { min-height: 44px; padding: 0 2px; background: none; border: 0; font-weight: 600; font-size: .875rem; text-decoration: underline; text-underline-offset: 3px; }
+
+.start-scena {
+  position: fixed; left: 64%; top: 58%; width: min(36vw, 58vh); aspect-ratio: 1; translate: -50% -50%; container-type: size; pointer-events: none;
+}
+.start-scena .stol { width: 100cqw; }
+.start-rewolwer {
+  position: absolute; left: 50%; top: 50%; width: 74%; translate: -48% -50%; rotate: -24deg;
+  filter: drop-shadow(0 .4cqw .3cqw rgba(0, 0, 0, .85)) drop-shadow(1cqw 3cqw 2.5cqw rgba(0, 0, 0, .55));
+}
+@media (max-width: 999px) { .start-scena { display: none; } }
+
+/* ---------- ekran gry: pasek pokoju, kartka z pytaniem, krąg graczy, pole odpowiedzi ---------- */
+#gra { display: grid; grid-template-rows: auto auto minmax(0, 1fr) auto; }
+.gora { position: relative; z-index: 30; display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 10px clamp(12px, 2.4vw, 28px) 2px; }
+.pokoj-info { display: flex; align-items: baseline; flex-wrap: wrap; gap: 2px 10px; min-width: 0; }
+.pokoj-info small { font-size: .8rem; color: var(--szary); }
+#pokoj-kod { font-family: var(--osd); font-weight: 400; font-size: 1.75rem; line-height: 1; letter-spacing: .08em; }
+.pokoj-info span b { font-weight: 650; }
+/* sprawdzanie hosta u gościa: spokojny dopisek, gdy wszystko się zgadza, czerwony alarm przy oszustwie */
+.uczciwosc { font-size: .8rem; color: var(--szary); cursor: help; }
+.uczciwosc.oszust { color: #ff5a44; font-weight: 700; }
+.ikony { display: flex; gap: 2px; flex: none; }
+.ikona {
+  position: relative; display: grid; place-items: center; width: 40px; height: 40px; padding: 0; border: 1px solid transparent; border-radius: 2px;
+  background: none; color: var(--szary); font-weight: 650;
+}
+.ikona:hover { color: var(--tekst); border-color: var(--linia2); }
+.ikona svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+.ikona.tekstowa { width: auto; padding: 0 6px; font-family: var(--osd); font-weight: 400; font-size: 1.25rem; }
+.ikona.tekstowa[aria-pressed='true'] { color: var(--tekst); }
+.ikona.tekstowa[aria-pressed='false'] { text-decoration: line-through; }
+#dzwiek .krzyzyk, #dzwiek.wyciszony .fala { display: none; }
+#dzwiek.wyciszony .krzyzyk { display: inline; }
+.ikona.nowe::after { content: ''; position: absolute; top: 6px; right: 6px; width: 7px; height: 7px; border-radius: 50%; background: var(--rdza2); }
+.reakcje { position: absolute; top: 100%; right: clamp(12px, 2.4vw, 28px); z-index: 60; display: flex; gap: 2px; padding: 4px; background: var(--powierzchnia); border: 1px solid var(--linia2); }
+.reakcje button { width: 44px; height: 44px; padding: 0; border: 0; background: none; font-size: 1.4rem; line-height: 1; }
+.reakcje button:hover { background: #22211d; }
+
+.naglowek { position: relative; z-index: 20; display: grid; justify-items: center; padding: 6px 14px 0; }
+.znak.maly h1 { font-size: clamp(2.8rem, 6vw, 4.2rem); }
+/* pytanie: kartka z maszyny do pisania przyklejona taśmą */
+.karta {
+  position: relative; width: min(620px, 100%); padding: 14px 20px 13px; rotate: -.5deg; color: var(--atrament);
+  background: linear-gradient(172deg, #ded6c0, #cfc5aa 70%, #c6bb9d); box-shadow: 0 10px 22px rgba(0, 0, 0, .6);
+}
+.karta::before { content: ''; position: absolute; top: -10px; left: 50%; width: 90px; height: 22px; translate: -50% 0; rotate: -3deg; background: rgba(228, 220, 192, .7); box-shadow: 0 1px 1px rgba(0, 0, 0, .25); }
+.karta small { display: block; font-size: .8rem; font-weight: 650; color: #7a2a1c; }
+.karta b { display: block; margin-top: .3em; font-family: var(--notatka); font-weight: 400; font-size: clamp(1.15rem, .7rem + 1.2vw, 1.6rem); line-height: 1.3; overflow-wrap: anywhere; }
+.karta.nowa { animation: nowa-karta .45s ease-out; }
+/* zaliczona kategoria: kartka gaśnie i zsuwa się, zanim przyjdzie nowa */
+.karta.zaliczona { animation: zaliczona 1.3s ease-in forwards; }
+.karta.zaliczona::after {
+  content: 'ZALICZONE'; position: absolute; right: 16px; top: 50%; padding: .08em .45em; translate: 0 -50%; rotate: -8deg;
+  border: 3px solid rgba(142, 26, 18, .85); border-radius: 4px; color: rgba(142, 26, 18, .9);
+  font-size: 1.5rem; font-weight: 800; font-stretch: 75%; letter-spacing: .1em; mix-blend-mode: multiply; animation: pieczatka .22s ease-out;
+}
+@keyframes pieczatka { from { opacity: 0; transform: scale(1.8); } to { opacity: 1; transform: none; } }
+@keyframes zaliczona { 0%, 60% { opacity: 1; transform: none; } 100% { opacity: 0; transform: translateY(10px) rotate(2deg); } }
+@keyframes nowa-karta { from { opacity: 0; transform: translateY(-10px) rotate(-2deg); } to { opacity: 1; transform: none; } }
+/* koniec rundy: jedyna chwila na środku i w dużym rozmiarze */
+.wygrana { display: flex; flex-direction: column; align-items: center; gap: 4px; text-align: center; }
+.wygrana > small { font-size: .875rem; color: var(--szary); }
+.wygrana-kto { display: flex; align-items: center; gap: 12px; }
+.wygrana-av { width: 3.6rem; }
+.wygrana-av:empty { display: none; }
+#wygrana-imie { font-weight: 750; font-stretch: 80%; font-size: clamp(2rem, 4.5vw, 3rem); line-height: 1; overflow-wrap: anywhere; }
+.wygrana-pods { display: flex; flex-wrap: wrap; justify-content: center; gap: 2px 16px; margin-top: 2px; font-size: .875rem; color: var(--szary); }
+.wygrana-pods b { font-weight: 650; color: var(--tekst); }
+
+.scena { position: relative; container-type: size; min-height: 0; display: grid; place-items: center; padding: 4px 12px; }
+.scena .osd { font-size: clamp(18px, 1.9vw, 26px); }
+.scena .osd-tryb, .scena .osd-licznik { top: 8px; }
+.scena .osd-data { bottom: 8px; }
+
+.dol { position: relative; z-index: 20; display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 0 12px calc(10px + env(safe-area-inset-bottom)); }
+.dol > * { width: min(640px, 100%); }
+.status { margin: 0; min-height: 1.4em; text-align: center; font-size: .95rem; line-height: 1.4; color: var(--szary); }
+.status b { font-weight: 650; color: var(--tekst); }
+.status .glos { margin-right: .5em; font-size: .75rem; font-weight: 600; color: var(--ciemny); }
+.status.zly { color: #d6703f; }
+.status.zly b { color: #e2553e; }
+.pasek-gry { display: flex; align-items: center; gap: 10px; }
+.moje-serce {
+  position: relative; flex: none; width: 48px; height: 48px; border-radius: 50%; display: grid; place-items: center;
+  background: conic-gradient(var(--zarowka) calc(var(--p, 0) * 360deg), #2a2925 0);
+}
+.moje-serce::before { content: ''; position: absolute; inset: 4px; border-radius: 50%; background: #0e0e0c; }
+.moje-serce span, .moje-serce b { position: relative; line-height: 1; }
+.moje-serce span { position: absolute; left: 11px; top: 16px; font-size: 1rem; color: var(--czerwien); }
+.moje-serce b { margin-left: 12px; font-weight: 650; }
+.pole { position: relative; flex: 1; min-width: 0; }
+.pole input {
+  font-family: var(--notatka); font-size: 1.15rem; color: var(--atrament); border: 0; border-radius: 1px;
+  background: repeating-linear-gradient(transparent 0 calc(100% - 7px), rgba(140, 110, 80, .35) calc(100% - 7px) calc(100% - 6px), transparent calc(100% - 6px)), linear-gradient(176deg, #e2d9c2, #cfc4a6);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, .55);
+}
+.pole input::placeholder { color: #8a7c63; font-family: var(--reka); font-size: 1.2rem; }
+.pole input:disabled { opacity: .55; }
+.moja-tura .pole input { box-shadow: 0 0 0 2px var(--zarowka), 0 4px 10px rgba(0, 0, 0, .55); }
+.moja-tura.groza .pole input { box-shadow: 0 0 0 3px var(--rdza2), 0 4px 10px rgba(0, 0, 0, .55); }
+/* pasek pod polem: jak mocno odciągnięty kurek (5 stopni na turę), na ostatnim robi się czerwony */
+#bezpiecznie { position: absolute; left: 0; bottom: -6px; height: 3px; width: 100%; background: var(--zarowka); transform: scaleX(0); transform-origin: 0 50%; transition: transform .25s ease-out; }  /* scaleX zamiast width: przejście bez layoutu w każdej klatce */
+.groza #bezpiecznie { background: var(--rdza2); }
+.groza .winieta { background: radial-gradient(ellipse 70% 66% at 50% 42%, transparent 25%, rgba(70, 0, 0, .9) 100%); animation: tetno .6s ease-in-out infinite; }
+.lobby { display: flex; flex-direction: column; gap: 8px; }
+/* ustawienia pokoju w jednym rzędzie, rozdzielone cienkimi liniami */
+.ustawienia { display: grid; grid-template-columns: repeat(4, 1fr); border: 1px solid var(--linia); border-radius: 3px; background: rgba(12, 12, 10, .8); }
+.ustawienie { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; min-height: 64px; padding: 6px 4px; border-left: 1px solid var(--linia); }
+.ustawienie:first-child { border-left: 0; }
+.ustawienie > span { font-size: .8rem; color: var(--szary); }
+.krokomierz { display: flex; align-items: center; gap: 2px; }
+.krokomierz b { min-width: 3.4ch; text-align: center; font-weight: 650; font-size: 1.05rem; }
+.krokomierz button { width: 36px; height: 36px; padding: 0; border: 0; border-radius: 2px; background: none; font-size: 1.2rem; line-height: 1; color: var(--szary); }
+.krokomierz button:hover { color: var(--tekst); background: #22211d; }
+.link-ustawien { min-height: 36px; padding: 0; background: none; border: 0; font-weight: 600; text-decoration: underline; text-underline-offset: 3px; text-decoration-color: var(--linia2); }
+/* zaproszenie w poczekalni: kod QR na kartce papieru, obok adres i przycisk */
+.zaproszenie-gra { display: flex; align-items: center; gap: 14px; }
+.qr { flex: none; width: 104px; padding: 8px; rotate: -1.5deg; background: #e4ddc8; box-shadow: 0 6px 14px rgba(0, 0, 0, .55); }
+.qr svg { display: block; width: 100%; height: auto; }
+.qr svg rect[fill='#ffffff'], .qr svg path[fill='#ffffff'] { fill: transparent; }
+.zaproszenie-opis { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; min-width: 0; font-size: .875rem; color: var(--szary); }
+.zaproszenie-opis > b { font-size: 1rem; color: var(--tekst); }
+.zaproszenie-opis i { font-style: normal; color: var(--tekst); overflow-wrap: anywhere; }
+.zaproszenie-opis span b { font-family: var(--osd); font-weight: 400; font-size: 1.3rem; letter-spacing: .1em; color: var(--tekst); }
+.linki { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; font-size: .875rem; color: var(--szary); }
+.linki-przyciski { display: flex; gap: 16px; }
+
+/* czat: wysuwany z prawej krawędzi */
+.czat {
+  position: fixed; top: 60px; right: 12px; bottom: 12px; z-index: 60; width: min(320px, calc(100vw - 24px)); display: flex; flex-direction: column; gap: 8px; padding: 14px;
+  background: rgba(17, 17, 15, .96); border: 1px solid var(--linia2); border-radius: 3px; box-shadow: 0 16px 40px rgba(0, 0, 0, .7);
+}
+.czat-gora { display: flex; justify-content: space-between; align-items: baseline; }
+.czat-gora h2 { font-size: .875rem; font-weight: 600; color: var(--szary); }
+.czat-kod { font-size: .8rem; color: var(--szary); }
+.czat-kod b { font-family: var(--osd); font-weight: 400; font-size: 1.35rem; letter-spacing: .08em; color: var(--tekst); }
+.czat-kod span { display: block; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; overflow-wrap: anywhere; }
+.czat-wpisy { flex: 1; min-height: 60px; overflow-y: auto; font-size: .875rem; line-height: 1.45; }
+.czat-wpisy p { margin: 0 0 .35em; overflow-wrap: anywhere; }
+.czat-wpisy b { color: var(--tekst); }
+.czat-wpisy .sys { color: var(--ciemny); }
+.czat-formularz { display: flex; gap: 8px; }
+.czat-formularz input { font-size: 1rem; }  /* poniżej 16 px iPhone powiększa stronę przy pisaniu */
+
+/* ---------- krąg graczy wokół stołu ---------- */
+.arena {
+  position: relative; container-type: size; width: min(100cqw, 135cqh); height: min(100cqh, 150cqw);
+  font-size: clamp(10px, calc(min(100cqw, 100cqh) / 30), 21px);
+}
+/* okrągły zardzewiały stół w plamie światła żarówki */
+.stol {
+  position: absolute; left: 50%; top: var(--cy, 48%); width: min(46cqw, 50cqh); aspect-ratio: 1; translate: -50% -50%; border-radius: 50%;
+  background:
+    radial-gradient(circle at 63% 60%, rgba(60, 6, 4, .7), rgba(60, 6, 4, .25) 11%, transparent 17%),
+    radial-gradient(circle at 50% 45%, transparent 30%, rgba(0, 0, 0, .55) 75%),
+    url(zasoby/stol.jpg) center / 60% auto,
+    radial-gradient(circle at 50% 46%, #c4bea8 0%, #77736a 38%, #2e2d29 78%, #121211 100%);
+  background-blend-mode: normal, normal, multiply, normal;
+  box-shadow: 0 0 0 .35em #252523, 0 0 0 .55em #0f0f0e, 0 1.8em 3em rgba(0, 0, 0, .85), inset 0 0 2.4em rgba(0, 0, 0, .7);
+  animation: migotanie 11s infinite;
+}
+.stol::before {
+  content: ''; position: absolute; inset: 0; border-radius: 50%; pointer-events: none; mix-blend-mode: multiply;
+  background:
+    radial-gradient(circle at 30% 34%, transparent 6.2%, rgba(70, 42, 18, .55) 6.6%, rgba(70, 42, 18, .3) 7.4%, transparent 7.9%),
+    radial-gradient(circle at 31% 35%, rgba(90, 60, 30, .18) 0 6%, transparent 6.4%),
+    radial-gradient(circle at 72% 30%, rgba(0, 0, 0, .7) 0 .7%, rgba(40, 20, 8, .45) 1.4%, transparent 2.4%),
+    radial-gradient(circle at 76% 33%, rgba(0, 0, 0, .55) 0 .5%, rgba(40, 20, 8, .35) 1.1%, transparent 2%),
+    radial-gradient(circle at 24% 70%, rgba(0, 0, 0, .6) 0 .6%, rgba(40, 20, 8, .4) 1.2%, transparent 2.1%),
+    linear-gradient(118deg, transparent 47.6%, rgba(255, 245, 220, .14) 47.8% 48%, transparent 48.3%),
+    linear-gradient(64deg, transparent 61%, rgba(255, 245, 220, .1) 61.2% 61.35%, transparent 61.6%);
+}
+.stol::after {
+  content: ''; position: absolute; left: 66%; top: 62%; width: 17%; aspect-ratio: 234 / 302; rotate: 28deg; pointer-events: none;
+  background: url(zasoby/luski.webp) center / contain no-repeat; filter: brightness(.8) drop-shadow(0 .15em .1em rgba(0, 0, 0, .8));
+}
+.arena.blysk .stol { animation: blysk .5s ease-out; }
+@keyframes blysk { 15% { filter: brightness(2.4) saturate(.4); } }
+/* cienka linia kręgu, na której stoją gracze */
+.krag { position: absolute; left: 10%; right: 10%; top: 12%; bottom: 12%; border-radius: 50%; border: 1px solid rgba(233, 229, 217, .07); pointer-events: none; }
+/* czerwona linia strzału od lufy do osoby, która odpowiada */
+.linia {
+  position: absolute; z-index: 5; height: 2px; margin-top: -1px; transform-origin: 0 50%; opacity: 0; pointer-events: none;
+  background: linear-gradient(90deg, rgba(226, 38, 26, 0), rgba(226, 38, 26, .65) 25%, rgba(255, 70, 50, .95));
+  box-shadow: 0 0 6px rgba(226, 38, 26, .55); transition: opacity .3s, width .45s ease-out, transform .45s ease-out;
+}
+.linia.widac { opacity: .8; }
+.groza .linia { animation: tetno .3s ease-in-out infinite; }
+
+.miejsce {
+  position: absolute; width: 10em; translate: -50% -42%; display: flex; flex-direction: column; align-items: center; text-align: center;
+  font-size: calc(var(--skala, 1) * 1em); transition: left .4s, top .4s;
+}
+/* żeton: torba na głowie, pod nią na posadzce elipsa paska do dodatkowego serca (elipsa = okrąg w perspektywie) */
+.zeton { position: relative; width: 4.8em; height: 4.8em; display: grid; place-items: center; transition: transform .3s ease-out; }
+.zeton::before {
+  content: ''; position: absolute; left: 12%; right: 12%; bottom: 2%; height: 30%; border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(0, 0, 0, .75), transparent);  /* cień torby na posadzce */
+}
+.pierscien {
+  position: absolute; inset: auto -.15em -.3em; height: 2.2em; border-radius: 50%;
+  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - .34em), #000 calc(100% - .32em));
+  mask: radial-gradient(farthest-side, transparent calc(100% - .34em), #000 calc(100% - .32em));
+}
+.postac { position: relative; width: 3.7em; margin-top: -.9em; animation: drzenie 4s ease-in-out infinite; }
+.torba { display: block; width: 100%; height: auto; overflow: visible; filter: drop-shadow(0 .14em .12em rgba(0, 0, 0, .8)); }
+.torba .cien { display: none; }
+.torba .papier { fill: url(#papier) #9a7a50; stroke: rgba(40, 26, 12, .55); stroke-width: .8; }
+.torba .cieniowanie { fill: url(#cieniowanie-torby); }
+.torba .falda { fill: none; stroke: rgba(45, 28, 12, .32); stroke-width: 1.1; stroke-linecap: round; }
+.torba .dziura { fill: #070504; }
+.torba .blysk { fill: rgba(255, 244, 214, .8); }
+.torba .marker { fill: none; stroke: #16100a; stroke-width: 3.1; stroke-linecap: round; stroke-linejoin: round; opacity: .92; }
+.torba .marker.cienki { stroke-width: 1.9; }
+.torba .marker.przerywany { stroke-dasharray: 2.5 4.5; }
+.torba .kropla { fill: #8fb6cc; stroke-width: 1.4; }
+.torba .opatrunek { fill: #e7e0cd; stroke: rgba(60, 40, 20, .35); stroke-width: .8; }
+.torba .farba-biala { fill: #ece6d8; opacity: .88; }
+.torba .farba-czerwona { fill: #b1241a; stroke: #b1241a; stroke-linecap: round; }
+.torba.duch .papier { fill: url(#przescieradlo) #d6d1c4; stroke: rgba(0, 0, 0, .3); }
+.torba.duch .falda { stroke: rgba(0, 0, 0, .18); }
+.serca { display: flex; gap: .12em; margin-top: .6em; font-size: .95em; line-height: 1; }
+.serca i {
+  font-style: normal; display: inline-block; width: 1.05em; height: .95em; color: transparent; overflow: hidden;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 22'%3E%3Cpath d='M12 20.5C8 17 2.5 13.4 2.2 8.4 2 5 4.3 2.4 7.3 2.6c2 .1 3.6 1.6 4.6 3.4 1-1.9 2.8-3.5 5-3.4 3 .2 5 2.9 4.7 6.1-.5 4.9-5.6 8.4-9.6 11.8z' fill='%23b3231a' stroke='%23400a05' stroke-width='1.2' stroke-linejoin='round'/%3E%3Cpath d='M6 6.2c1-.9 2.4-.8 3.1.2' stroke='%23ff9a85' stroke-width='1.3' fill='none' stroke-linecap='round' opacity='.7'/%3E%3C/svg%3E") center / contain no-repeat;
+  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, .7));
+}
+.serca .puste { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 22'%3E%3Cpath d='M12 20.5C8 17 2.5 13.4 2.2 8.4 2 5 4.3 2.4 7.3 2.6c2 .1 3.6 1.6 4.6 3.4 1-1.9 2.8-3.5 5-3.4 3 .2 5 2.9 4.7 6.1-.5 4.9-5.6 8.4-9.6 11.8z' fill='none' stroke='%23d8ceb2' stroke-opacity='.35' stroke-width='1.6' stroke-dasharray='3 2.5' stroke-linejoin='round'/%3E%3C/svg%3E"); }
+.serca .traci { animation: traci .9s ease-out; }
+.serca .zyskuje { animation: zyskuje .9s ease-out; }
+.imie {
+  max-width: 9.5em; margin-top: .3em; padding: .12em .85em .02em; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
+  background: url(zasoby/tasma.webp) center / 100% 100% no-repeat; rotate: var(--obrot, 0deg);
+  font-family: var(--reka); font-weight: 400; font-size: 1.12em; line-height: 1.25; color: #1c1611;
+  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, .6));
+}
+.imie small { margin-left: .3em; font-size: .78em; color: #6a5a46; }
+.ja .imie { background-image: linear-gradient(transparent 78%, rgba(178, 36, 26, .55) 78% 88%, transparent 88%), url(zasoby/tasma.webp); background-size: 80% 100%, 100% 100%; background-position: center; }
+.zapas .pierscien { background: var(--zloto) !important; }
+/* pod lufą: żeton rośnie, czerwona obwódka pulsuje */
+.trzyma { z-index: 25 !important; }
+.trzyma .zeton { transform: scale(1.2); }
+.trzyma .zeton::after { content: ''; position: absolute; inset: auto -.35em -.45em; height: 2.5em; border-radius: 50%; box-shadow: 0 0 0 2px rgba(226, 38, 26, .9), 0 0 1.3em rgba(226, 38, 26, .55); animation: puls .8s ease-in-out infinite alternate; }
+.trzyma .postac { filter: none; animation: dygot .35s linear infinite; }
+.trzyma .imie { color: #8e1a10; }
+/* po rundzie: zwycięzca w ciepłym świetle, reszta kręgu przygasa */
+.zwyciezca { z-index: 25 !important; }
+.zwyciezca .zeton { transform: scale(1.3); }
+.zwyciezca .zeton::after { content: ''; position: absolute; inset: auto -.35em -.45em; height: 2.5em; border-radius: 50%; box-shadow: 0 0 0 2px rgba(232, 196, 96, .95), 0 0 1.8em rgba(232, 196, 96, .55); animation: puls 1.4s ease-in-out infinite alternate; }
+.zwyciezca .imie { color: #5c3d00; }
+.po-rundzie .miejsce:not(.zwyciezca) { opacity: .5; }
+/* odpadnięty: szary żeton przekreślony na czerwono */
+.martwy .zeton { filter: grayscale(1) brightness(.55); }
+.martwy .zeton::after { content: ''; position: absolute; inset: .3em; border-radius: 50%; background: linear-gradient(45deg, transparent 46%, rgba(190, 30, 20, .95) 46% 54%, transparent 54%); }
+.martwy .postac { animation: none; }
+.martwy .imie { text-decoration: line-through 2px #a3221a; color: #4a3f33; }
+.wolne .zeton::before { left: 0; right: 0; bottom: -.3em; height: 2.2em; background: none; box-shadow: none; border: 1px dashed rgba(233, 229, 217, .25); }
+.wolne .pierscien { display: none; }
+.wolne .imie { background: none; color: rgba(216, 206, 178, .35); filter: none; }
+.widz, .offline { opacity: .5; }
+.offline .postac { animation: none; filter: grayscale(.8); }
+.trafiony .zeton { animation: trafiony .7s ease-out; }
+@keyframes trafiony { 0% { filter: brightness(2.6); } 20% { translate: -.25em 0; } 40% { translate: .25em 0; } 60% { translate: -.1em 0; } 100% { translate: 0 0; filter: none; } }
+/* odpowiedź nad żetonem: na żywo to, co gracz pisze; po przyjęciu w kolorze poziomu i zostaje mniejsza do końca kategorii */
+.dymek {
+  position: absolute; left: 0; right: 0; bottom: calc(100% + .35em); z-index: 40; width: fit-content; max-width: 14em; margin-inline: auto;
+  padding: .4em .7em .34em; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
+  background: rgba(10, 10, 9, .94); border: 1px solid #4a4740; border-radius: 3px; color: var(--tekst); font-size: 1.1em; font-weight: 600; line-height: 1;
+  box-shadow: 0 .3em .8em rgba(0, 0, 0, .6);
+}
+.u-gory .dymek { bottom: auto; top: calc(100% + .3em); }
+.trzyma .dymek { font-size: 1.25em; border-color: #6b675d; }
+.dymek.caret::after { content: ''; display: inline-block; width: 2px; height: .95em; margin-left: 2px; vertical-align: -2px; background: var(--zarowka); animation: mrug .9s step-end infinite; }
+.dymek.ok { color: var(--k); border-color: var(--k); animation: wyskok-dymka .3s ease-out; }
+.dymek.zle { color: #ff8a4c; border-color: #b3562a; text-decoration: line-through 2px; animation: jolt .4s linear; }
+.dymek.odlozony { max-width: 11em; padding: .32em .55em .28em; font-size: .82em; color: var(--k); border-color: #34322c; opacity: .9; }
+.dymek.ok, .dymek.odlozony { text-transform: lowercase; }  /* przyjęte odpowiedzi małymi literami, jak w krillionie */
+.tag-poziomu {
+  position: absolute; left: 0; right: 0; bottom: calc(100% + 2.75em); z-index: 41; width: fit-content; margin-inline: auto; opacity: 0; pointer-events: none; white-space: nowrap;
+  font-size: .82em; font-weight: 800; font-stretch: 78%; letter-spacing: .06em; text-transform: uppercase; color: var(--k); text-shadow: 0 1px 0 #000, 0 0 4px #000;
+}
+.u-gory .tag-poziomu { bottom: auto; top: calc(100% + 2.9em); }
+.tag-poziomu.widac { animation: tag 1.8s ease-out; }
+.reakcja { position: absolute; left: 50%; top: 0; z-index: 45; font-size: 2.1em; line-height: 1; pointer-events: none; animation: reakcja 1.8s ease-out forwards; }
+/* host może kliknąć cudze miejsce, żeby wyrzucić gracza albo bota */
+body.host .miejsce:not(.ja):not(.wolne) { cursor: pointer; }
+body.host .miejsce:not(.ja):not(.wolne):hover .postac { filter: drop-shadow(0 0 .1em var(--rdza2)) drop-shadow(0 0 .1em var(--rdza2)); }
+
+/* ---------- rewolwer na środku stołu ---------- */
+/* cień od żarówki nad stołem liczony na nieobracającym się pudełku, więc zawsze pada w tę samą stronę */
+#rewolwer {
+  position: absolute; left: 50%; top: var(--cy, 48%); z-index: 15; width: min(36cqw, 44cqh); aspect-ratio: 2; pointer-events: none; transform: translate(-50%, -50%);
+  filter: drop-shadow(0 .12em .1em rgba(0, 0, 0, .85)) drop-shadow(.25em .8em .7em rgba(0, 0, 0, .55));
+}
+#rewolwer .obrot { position: relative; width: 100%; height: 100%; transform: rotate(var(--kat, -24deg)); transition: transform .5s cubic-bezier(.25, 1.15, .5, 1); }
+#rewolwer svg { display: block; width: 100%; height: 100%; overflow: visible; }
+#rewolwer .obrot > svg { position: absolute; inset: 0; }  /* błysk wystrzału nad bronią */
+#rewolwer .drgania, #rewolwer .odrzut { width: 100%; height: 100%; }
+#rewolwer .ogien { opacity: 0; transform-box: fill-box; transform-origin: 50% 50%; }
+/* odliczanie: zakręcony jak butelka, zwalnia */
+#rewolwer.kreci .obrot { transition: none; animation: kreci 3s cubic-bezier(.15, .6, .3, 1) forwards; }
+/* każdy stopień kurka szarpie bronią, na ostatnim drży bez przerwy */
+#rewolwer.drgnie .drgania { animation: drgnie .2s ease-out; }
+#rewolwer.drzy .drgania { animation: drzy .09s linear infinite; }
+#rewolwer.strzal .odrzut { animation: odrzut .5s cubic-bezier(.2, .8, .3, 1); }
+#rewolwer.strzal .ogien { animation: ogien .22s ease-out; }
+/* przesunięcia w jednostkach rysunku broni (120 x 60) zapisane jako procent pudełka */
+@keyframes drgnie { 30% { transform: rotate(-1.6deg) translate(-.6667%, 0); } }
+@keyframes drzy { 25% { transform: rotate(.7deg) translate(.3333%, -.5%); } 75% { transform: rotate(-.7deg) translate(-.3333%, .5%); } }
+@keyframes odrzut { 10% { transform: translate(-6.6667%, 0) rotate(-7deg) scale(1.06); } 100% { transform: none; } }
+@keyframes ogien { 0% { opacity: 1; transform: scale(.55); } 20% { opacity: 1; transform: scale(1.1); } 100% { opacity: 0; transform: scale(1.3); } }
+.dym-strzalu {
+  position: fixed; z-index: 50; width: 40px; height: 40px; margin: -20px; border-radius: 50%; pointer-events: none;
+  background: radial-gradient(closest-side, rgba(210, 205, 190, .55), rgba(190, 185, 170, .15) 70%, transparent);
+  filter: blur(3px); animation: dym-strzalu 1.8s cubic-bezier(.1, .7, .3, 1) forwards;
+}
+.odliczanie { position: absolute; left: 50%; top: 50%; z-index: 30; transform: translate(-50%, -50%); font-family: var(--osd); font-size: 9em; line-height: 1; color: #f3f0e4; text-shadow: .05em .05em 0 #000; }
+.odliczanie.wyskok { animation: odlicz 1s ease-out; }
+
+/* ---------- taśma Hi8: szum, linie, zakłócenia głowic, utrata ścieżki ---------- */
+.tasma { display: contents; }  /* bez własnego kontekstu: mieszanie i backdrop-filter warstw sięgają do obrazu pod spodem */
+.tasma > * { position: fixed; z-index: 150; pointer-events: none; }
+.szum { inset: -128px; background: url(zasoby/szum.webp) 0 0 / 384px 192px; opacity: .2; mix-blend-mode: overlay; animation: szum .26s steps(1) infinite; }
+/* ziarno wzmacniacza kamery: na jasnym prawie niewidoczne, w ciemnej piwnicy mrowi się z kolorowymi smugami (chrominancja taśmy) */
+.ziarno { inset: -128px; background: url(zasoby/ziarno.webp) 0 0 / 256px 256px; opacity: .2; mix-blend-mode: screen; animation: szum .2s steps(1) infinite reverse; }
+/* przydźwięk sieci: szeroki, ledwie jaśniejszy pas powoli przewija się przez obraz z góry na dół */
+.przydzwiek {
+  left: 0; right: 0; top: 0; height: 45vh; animation: przydzwiek 9s linear infinite;
+  background: linear-gradient(transparent, rgba(255, 248, 228, .03) 35%, rgba(255, 248, 228, .055) 50%, rgba(255, 248, 228, .03) 65%, transparent);
+}
+@keyframes przydzwiek { from { translate: 0 -45vh; } to { translate: 0 100vh; } }
+.linie { inset: 0; background: repeating-linear-gradient(0deg, rgba(0, 0, 0, .13) 0 1px, transparent 1px 3px); }
+/* przełączanie głowic: na dole kadru kilka linii przesuniętych w bok i zaszumionych */
+.glowice {
+  left: -4%; right: -4%; bottom: 0; height: clamp(5px, 1.3vh, 12px);
+  background: url(zasoby/szum.webp) 0 0 / 200px 24px; mix-blend-mode: screen; opacity: .55;
+  backdrop-filter: blur(1.5px) brightness(1.3); animation: glowice .2s steps(1) infinite;
+}
+.sciezka {
+  left: -3%; right: -3%; top: var(--y, 40%); height: var(--h, 6vh); opacity: 0;
+  background: url(zasoby/szum.webp) 0 0 / 260px 40px; mix-blend-mode: screen;
+  backdrop-filter: blur(2px) brightness(1.35) saturate(.5);
+}
+.sciezka.teraz { animation: sciezka var(--t, .35s) steps(1) forwards; }
+.ubytek { height: 2px; background: rgba(255, 255, 255, .75); box-shadow: 0 0 2px rgba(255, 255, 255, .6); opacity: 0; will-change: opacity; }
+@keyframes szum { 0% { translate: 0 0; } 20% { translate: -60px 34px; } 40% { translate: 40px -70px; } 60% { translate: -90px -20px; } 80% { translate: 70px 50px; } }
+@keyframes glowice { 0% { translate: 0 0; } 25% { translate: 9px 0; } 50% { translate: -5px 0; } 75% { translate: 14px 0; } }
+@keyframes sciezka { 0% { opacity: .9; translate: 6px 0; } 25% { opacity: .7; translate: -10px 0; } 50% { opacity: 1; translate: 3px 0; } 75% { opacity: .6; translate: -4px 0; } 100% { opacity: 0; } }
+
+/* ---------- wstrząs po strzale ---------- */
+.blysk-ekranu { position: fixed; inset: 0; z-index: 149; pointer-events: none; opacity: 0; background: radial-gradient(circle at 50% 55%, rgba(255, 236, 200, .6), rgba(190, 24, 12, .35) 55%, rgba(70, 0, 0, .55)); }
+.wstrzas .blysk-ekranu { animation: blysk-ekranu .4s ease-out; }
+.wstrzas-mocny .blysk-ekranu { animation: blysk-ekranu .7s ease-out; }
+.wstrzas .scena, .wstrzas-mocny .scena { animation: szarpniecie .35s steps(2) both; }
+.wstrzas-mocny .szum { opacity: .5; transition: opacity .2s; }
+@keyframes blysk-ekranu { 0% { opacity: 1; } 100% { opacity: 0; } }
+@keyframes szarpniecie { 0% { transform: translate(7px, -4px); } 25% { transform: translate(-6px, 3px); } 50% { transform: translate(4px, 1px); } 75% { transform: translate(-2px, -1px); } 100% { transform: none; } }
+
+/* ---------- okna, komunikaty, efekty ---------- */
+dialog {
+  width: min(540px, calc(100% - 32px)); max-height: calc(100dvh - 32px); padding: 24px; border: 1px solid var(--linia2); border-radius: 3px;
+  background: var(--powierzchnia); color: var(--tekst);
+}
+dialog::backdrop { background: rgba(0, 0, 0, .8); }
+dialog h2 { margin-bottom: .4em; font-weight: 750; font-stretch: 85%; font-size: 1.6rem; }
+dialog ol { padding-left: 1.3em; line-height: 1.5; }
+dialog li { margin-bottom: .6em; }
+dialog li::marker { font-weight: 700; color: var(--rdza2); }
+dialog p { font-size: .9rem; }
+dialog .przycisk { width: 100%; margin-top: 12px; }
+.legenda { display: grid; gap: 4px; font-size: .875rem; }
+.legenda div { display: flex; flex-wrap: wrap; gap: 0 .7em; align-items: baseline; }
+.legenda b { font-weight: 700; color: var(--k); }
+.legenda span { color: var(--szary); }
+.toast {
+  position: fixed; left: 50%; bottom: 24px; z-index: 200; max-width: calc(100% - 32px); padding: .7em 1.1em; border-radius: 2px;
+  background: var(--tekst); color: #141412; font-weight: 600; font-size: .95rem; text-align: center;
+  transform: translate(-50%, 16px); opacity: 0; pointer-events: none; transition: opacity .2s, transform .2s;
+}
+.toast.widac { opacity: 1; transform: translate(-50%, 0); }
+.iskra { position: fixed; z-index: 90; width: 6px; height: 6px; margin: -3px; border-radius: 50%; pointer-events: none; background: var(--k); animation: iskra .9s ease-out forwards; }
+.trzes { animation: trzes .4s; }
+
+@keyframes tag { 0% { opacity: 0; transform: translateY(30%); } 15%, 70% { opacity: 1; transform: none; } 100% { opacity: 0; transform: translateY(-60%); } }
+@keyframes drzenie { 0%, 100% { translate: 0 0; } 50% { translate: 0 -.04em; } 52% { translate: .02em -.04em; } 54% { translate: -.02em -.04em; } }
+@keyframes dygot { 25% { translate: .025em 0; } 75% { translate: -.025em 0; } }
+@keyframes reakcja { 0% { transform: translate(-50%, 40%) scale(.4); opacity: 0; } 15% { transform: translate(-50%, 0) scale(1.15); opacity: 1; } 100% { transform: translate(calc(-50% + var(--dx)), -120%) scale(1); opacity: 0; } }
+@keyframes kreci { from { transform: rotate(var(--kat-start, -24deg)); } to { transform: rotate(var(--kat-koniec, 1440deg)); } }
+@keyframes dym-strzalu { 0% { transform: scale(.4); opacity: .85; } 100% { transform: translate(var(--dx, 0), var(--dy, -60px)) scale(var(--s, 3.2)); opacity: 0; } }
+@keyframes tetno { 50% { opacity: .6; } }
+@keyframes puls { to { filter: brightness(1.4); } }
+@keyframes mrug { 50% { opacity: 0; } }
+@keyframes wyskok-dymka { 0% { scale: .7; } 60% { scale: 1.08; } 100% { scale: 1; } }
+@keyframes jolt { 20%, 60% { translate: -5px 0; } 40%, 80% { translate: 5px 0; } }
+@keyframes traci { 0% { transform: scale(1.8); color: #fff; } 100% { transform: none; } }
+@keyframes zyskuje { 0% { transform: scale(2.2); } 100% { transform: none; } }
+@keyframes odlicz { 0% { transform: translate(-50%, -50%) scale(1.5); opacity: .2; } 30% { transform: translate(-50%, -50%) scale(1); opacity: 1; } }
+@keyframes iskra { to { transform: translate(var(--dx), var(--dy)) scale(.2); opacity: 0; } }
+@keyframes trzes { 20%, 60% { translate: -6px 0; } 40%, 80% { translate: 6px 0; } }
+
+/* ---------- węższy ekran: start w jednej kolumnie, w grze mniejsze odstępy ---------- */
+@media (max-width: 999px) {
+  .start-uklad { display: flex; flex-direction: column; align-items: stretch; gap: 32px; max-width: 520px; padding: 76px 20px 56px; }
+  .lista-pokoi { align-self: stretch; }
+  #start .osd-data { display: none; }  /* stała data zasłaniałaby przewijany formularz */
+  .pokoje { max-height: none; }
+}
+@media (max-width: 640px) {
+  .gora { padding: 6px 6px 0 12px; }
+  #tytul { display: none; }
+  .karta { padding: 11px 14px 10px; }
+  .karta b { font-size: 1.1rem; }
+  .scena { padding: 4px; }
+  .scena .osd { font-size: 16px; }
+  .status { font-size: .875rem; }
+  .status .glos { display: block; margin: 0; }
+  .ustawienia { grid-template-columns: repeat(2, 1fr); }
+  .ustawienie { min-height: 56px; border-top: 1px solid var(--linia); }
+  .ustawienie:nth-child(-n + 2) { border-top: 0; }
+  .ustawienie:nth-child(odd) { border-left: 0; }
+  .czat { top: 0; right: 0; bottom: 0; width: min(340px, 88vw); border-radius: 0; border-width: 0 0 0 1px; }
+  /* na telefonie zaprasza się przyciskiem (systemowe udostępnianie); kod QR i opis są dla ekranu hosta na komputerze */
+  .qr, .zaproszenie-opis span { display: none; }
+  .zaproszenie-opis { flex: 1; flex-direction: row; justify-content: space-between; align-items: center; }
+  .zaproszenie-opis .przycisk { min-height: 40px; padding: .5em .9em; }
+}
+/* niski ekran (telefon z otwartą klawiaturą): napisy kamery nie mogą zasłaniać żetonów */
+@media (max-height: 560px) {
+  .scena .osd-licznik, .scena .osd-data { display: none; }
+  .gora { padding-top: 4px; }
+  .karta { padding: 8px 12px 7px; }
+  .karta b { font-size: 1rem; }
+}
+/* na pionowym ekranie krąg jest wąski, więc stół i rewolwer biorą większą część jego szerokości */
+@media (max-aspect-ratio: 3/4) {
+  .stol { width: min(58cqw, 48cqh); }
+  #rewolwer { width: min(48cqw, 40cqh); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .wahadlo, .smuga, .zarowka, .stozek, #rewolwer .obrot, .postac, .stol, .szum, .ziarno, .przydzwiek, .glowice, .linia, .scena, .blysk-ekranu { animation: none !important; }
+  .sciezka, .pyl { display: none; }
+  /* bez wstrząsów, drgań i błysków całego ekranu; komunikaty (pieczątka, poziom odpowiedzi) zostają, bo niosą informację */
+  .trzyma .postac, .trafiony .zeton, .dymek.zle, #rewolwer .drgania, #rewolwer.strzal .odrzut, .arena.blysk .stol,
+  .wstrzas .blysk-ekranu, .wstrzas-mocny .blysk-ekranu, .wstrzas .scena, .wstrzas-mocny .scena, .trzes { animation: none !important; }
+}

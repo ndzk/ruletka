@@ -1,0 +1,12 @@
+zasoby/js/peerjs.min.js to PeerJS 1.5.4 (https://cdn.jsdelivr.net/npm/peerjs@1.5.4/dist/peerjs.min.js, MIT, licencja w
+peerjs-LICENSE.txt) z jedną zmianą, w obu klasach odbierających wiadomości (format JSON, którego używa gra, i binarny):
+
+  przed:  _handleDataMessage({data:e}){let t=this.parse(this.decoder.decode(e)),n=t.__peerData;
+  po:     _handleDataMessage({data:e}){let t;try{t=this.parse(this.decoder.decode(e))}catch{return}let n=t?.__peerData;
+
+  przed:  _handleDataMessage({data:e}){let t=i(e),n=t.__peerData;
+  po:     _handleDataMessage({data:e}){let t;try{t=i(e)}catch{return}let n=t?.__peerData;
+
+Gość, który wysłał `null` albo nieprawidłowy JSON, wywoływał w przeglądarce hosta nieprzechwycony wyjątek
+("Cannot read properties of null (reading '__peerData')"). Teraz taka wiadomość jest pomijana albo trafia do gry,
+która i tak odrzuca wszystko, co nie jest obiektem. Suma SRI w gra.js (PEERJS.integrity) jest policzona dla zmienionego pliku.

@@ -1,0 +1,35 @@
+{
+  "id": "./",
+  "name": "Ruletka · gra w kategorie",
+  "short_name": "Ruletka",
+  "description": "Mroczna imprezowa gra w kategorie po polsku. Odpowiadasz i oddajesz rewolwer, zanim wystrzeli.",
+  "lang": "pl",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#0d0d0b",
+  "theme_color": "#0d0d0b",
+  "icons": [
+    {
+      "src": "zasoby/ikona-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "zasoby/ikona-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "zasoby/ikona-maskowalna-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "categories": [
+    "games",
+    "entertainment"
+  ],
+  "orientation": "any"
+}

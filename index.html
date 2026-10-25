@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; font-src 'self'; img-src 'self' data:; media-src 'self'; connect-src 'self' https://ntfy.sh https://0.peerjs.com wss://0.peerjs.com wss://public.cloud.shiftr.io wss://mqtt-dashboard.com:8884 wss://broker.hivemq.com:8884 wss://broker.emqx.io:8084; worker-src 'self'; manifest-src 'self'; frame-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'; require-trusted-types-for 'script'; trusted-types ruletka; upgrade-insecure-requests">
+<meta name="referrer" content="no-referrer">
+<meta name="viewport" content="width=device-width, initial-scale=1, interactive-widget=resizes-content">
+<title>Ruletka · imprezowa gra w kategorie</title>
+<meta name="description" content="Budzisz się w piwnicy z rękami przywiązanymi do krzesła. Odpowiadaj na pytania i oddawaj rewolwer dalej, zanim wystrzeli. Mroczna gra w kategorie dla znajomych, po polsku.">
+<meta name="theme-color" content="#0d0d0b">
+<meta name="color-scheme" content="dark">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="pl_PL">
+<meta property="og:title" content="Ruletka · imprezowa gra w kategorie">
+<meta property="og:description" content="Budzisz się w stęchłej piwnicy. Głos z głośnika każe ci grać. Odpowiadaj i oddawaj rewolwer, zanim wystrzeli. Graj ze znajomymi w przeglądarce.">
+<meta property="og:image" content="https://ndzk.github.io/ruletka/zasoby/og.jpg">
+<meta property="og:url" content="https://ndzk.github.io/ruletka/">
+<link rel="canonical" href="https://ndzk.github.io/ruletka/">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="zasoby/ikona-180.png">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='46' fill='%23474c54' stroke='%2318191c' stroke-width='6'/><g fill='%23120d09'><circle cx='50' cy='22' r='11'/><circle cx='74' cy='36' r='11'/><circle cx='74' cy='64' r='11'/><circle cx='50' cy='78' r='11'/><circle cx='26' cy='64' r='11'/><circle cx='26' cy='36' r='11'/></g><circle cx='50' cy='22' r='6' fill='%23e8b45a'/><circle cx='50' cy='50' r='7' fill='%23232529'/></svg>">
+<!-- czcionki tytułu, OSD i interfejsu od razu, równolegle z resztą (reszta czcionek przychodzi z style.css) -->
+<link rel="preload" href="zasoby/czcionki/archivo-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="zasoby/czcionki/archivo-latin-ext.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="zasoby/czcionki/vt323-latin.woff2" as="font" type="font/woff2" crossorigin>
+<!-- pytania wczytują się od razu, równolegle ze skryptami (gra.js czeka na nie przed startem) -->
+<link rel="preload" href="zasoby/dane.bin" as="fetch" crossorigin>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<!-- obraz z kamery Hi8: linie obrazu drgają w poziomie (błąd podstawy czasu taśmy: pasek drganie.png rozciągnięty na cały kadr,
+     przesuwany w pionie przez gra.js), filtr rozmywa kolor w poziomie i przesuwa go w prawo, wyostrza krawędzie jasności, czerń jest mleczna.
+     Szum generowany w filtrze (feTurbulence) i poświata kosztowały 2-4x więcej niż cały filtr, więc szum koloru leży nad obrazem (ziarno.webp).
+     Rozmycie ma w pionie 0.01 zamiast 0: Chrome przy zerze w jednej osi oddaje pusty obraz. Atrybuty z id zmienia kamera w gra.js. -->
+<svg class="filtry" aria-hidden="true">
+  <filter id="filtr-hi8" x="0" y="0" width="100%" height="100%" color-interpolation-filters="sRGB">
+    <feImage id="hi8-drganie" href="zasoby/drganie.png" x="0" y="0" width="1920" height="3240" preserveAspectRatio="none" result="drganie"/>
+    <feDisplacementMap in="SourceGraphic" in2="drganie" scale="3" xChannelSelector="R" yChannelSelector="G" result="obraz"/>
+    <feColorMatrix in="obraz" values=".299 .587 .114 0 0  .299 .587 .114 0 0  .299 .587 .114 0 0  0 0 0 1 0" result="y"/>
+    <feGaussianBlur id="hi8-ym" in="y" stdDeviation=".7 .35" result="ym"/>
+    <feGaussianBlur id="hi8-yb" in="y" stdDeviation="1.8 .01" result="yb"/>
+    <feComposite in="ym" in2="yb" operator="arithmetic" k2="1.5" k3="-.5" result="yy"/>
+    <feColorMatrix in="obraz" values=".3505 -.2935 -.057 0 .5  -.1495 .2065 -.057 0 .5  -.1495 -.2935 .443 0 .5  0 0 0 1 0" result="c"/>
+    <feGaussianBlur in="c" stdDeviation="3.2 .4" result="cb"/>
+    <feOffset in="cb" dx="2.5" result="cd"/>
+    <feComposite in="yy" in2="cd" operator="arithmetic" k2="1" k3="2.3" k4="-1.15" result="rgb"/>
+    <feComponentTransfer in="rgb">
+      <feFuncR id="hi8-r" type="linear" slope=".95" intercept=".05"/>
+      <feFuncG id="hi8-g" type="linear" slope=".93" intercept=".052"/>
+      <feFuncB id="hi8-b" type="linear" slope=".85" intercept=".06"/>
+    </feComponentTransfer>
+  </filter>
+  <!-- papierowe torby zakładników (twarze.js): zmięty szary papier, światło żarówki z góry, ciemniejsze boki -->
+  <pattern id="papier" patternUnits="userSpaceOnUse" width="100" height="110"><image href="zasoby/torba.webp" width="100" height="110" preserveAspectRatio="xMidYMid slice"/></pattern>
+  <radialGradient id="cieniowanie-torby" cx=".5" cy="0" r="1.05">
+    <stop offset="0" stop-color="#fff2c8" stop-opacity=".22"/><stop offset=".55" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".62"/>
+  </radialGradient>
+  <linearGradient id="przescieradlo" x1="0" x2="1"><stop offset="0" stop-color="#9c978a"/><stop offset=".45" stop-color="#e2ded2"/><stop offset="1" stop-color="#8e897c"/></linearGradient>
+</svg>
+
+<div id="kadr">
+<div id="tlo" aria-hidden="true">
+  <div class="podloga"></div><div class="plesn"></div><div class="smuga"></div>
+  <div class="wahadlo"><div class="stozek"><div id="pyl" class="pyl"></div></div><div class="zarowka"></div></div>
+  <!-- ślady po poprzednich: kreski liczące dni wydrapane w tynku i kartka z regułami porywacza przybita do ściany -->
+  <svg class="kreski" viewBox="0 0 160 120" aria-hidden="true">
+    <g><path d="M8 18l2 58M20 16l-1 62M31 19l3 57M43 15l-2 60M3 54l48-19"/><path d="M66 22l1 55M78 18l2 60M90 21l-2 56M102 17l1 61M60 52l50-21"/><path d="M125 20l1 56M137 18l-1 59"/></g>
+  </svg>
+  <div class="kartka-regul" aria-hidden="true">
+    <b>ZASADY</b>
+    <ol><li>Lufa na tobie = odpowiadasz.</li><li>Nie powtarzaj po innych.</li><li>Nie płacz. Nie pomaga.</li><li>Wychodzi ostatni.</li></ol>
+  </div>
+  <div class="winieta"></div>
+</div>
+
+<main id="start" class="ekran">
+  <!-- na ekranie startowym rewolwer czeka na stole w świetle żarówki -->
+  <div class="start-scena" aria-hidden="true"><div class="stol"></div><img class="start-rewolwer" src="zasoby/rewolwer.webp" alt=""></div>
+  <div class="osd" aria-hidden="true">
+    <span class="osd-tryb">STBY</span><span class="osd-licznik">0:00:00</span>
+    <span class="osd-bateria"><i></i><i></i><i></i></span>
+    <span class="osd-data"></span>
+  </div>
+  <div class="start-uklad">
+    <div class="start-kolumna">
+      <header class="znak">
+        <h1>RULETKA</h1>
+        <p>Imprezowa gra w kategorie dla 2–16 osób. Odpowiadasz i oddajesz rewolwer następnej osobie, zanim wystrzeli.</p>
+        <p id="ile-pytan" class="ile-pytan"></p>
+      </header>
+
+      <section id="panel-zaproszenia" class="zaproszenie" hidden>
+        <p>Ktoś zaprosił cię do pokoju <b id="kod-zaproszenia"></b></p>
+        <button id="zajmij" class="przycisk glowny">Zajmij miejsce</button>
+      </section>
+
+      <div class="grupa">
+        <div class="etykieta-wiersz"><label for="imie">Imię</label><button id="jak" class="link" type="button">Jak grać</button></div>
+        <input id="imie" maxlength="16" placeholder="jak masz na imię?" autocomplete="nickname">
+        <div id="awatary" class="awatary" aria-label="Wybierz postać"></div>
+        <div id="statystyki" class="statystyki"></div>
+      </div>
+
+      <div class="grupa">
+        <button id="stworz" class="przycisk glowny">Załóż pokój</button>
+        <label class="przelacznik"><input id="widocznosc" type="checkbox"> <span id="widocznosc-opis"></span></label>
+        <label class="przelacznik"><input id="ukryj-ip" type="checkbox"> <span>Ukryj mój adres IP przed graczami (przez przekaźnik, trochę wolniej)</span></label>
+        <div class="dwa">
+          <button id="szybka" class="przycisk">Szybka gra</button>
+          <button id="boty" class="przycisk">Gra z botami</button>
+        </div>
+        <div class="dolacz">
+          <input id="kod" maxlength="4" placeholder="kod" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-label="Kod pokoju">
+          <button id="dolacz" class="przycisk">Dołącz</button>
+        </div>
+        <p id="blad" class="blad" role="status"></p>
+        <p class="drobne"><button id="hi8-start" class="link" type="button"></button></p>
+      </div>
+    </div>
+
+    <section class="lista-pokoi">
+      <h2>Publiczne pokoje <small id="pokoje-ile"></small></h2>
+      <div id="pokoje" class="pokoje" aria-live="polite"><p class="szary">Szukam pokoi…</p></div>
+    </section>
+  </div>
+</main>
+
+<main id="gra" class="ekran" hidden>
+  <header class="gora">
+    <div class="pokoj-info">
+      <small id="pokoj-typ">Pokój</small><b id="pokoj-kod">····</b>
+      <span><b id="licznik">1/6</b> <small id="licznik-napis">gotowi</small></span>
+      <span id="uczciwosc" class="uczciwosc" hidden></span>
+    </div>
+    <div class="ikony">
+      <button id="menu" class="ikona" title="Jak grać" aria-label="Jak grać">?</button>
+      <button id="hi8" class="ikona tekstowa" title="Obraz z kamery Hi8" aria-label="Filtr kamery Hi8" aria-pressed="true">Hi8</button>
+      <button id="reakcje-przycisk" class="ikona" title="Reakcje" aria-label="Pokaż reakcje" aria-expanded="false"><svg viewBox="0 0 20 20"><circle cx="10" cy="10" r="7.5"/><path d="M6.8 11.8c1.6 2 4.8 2 6.4 0"/><path d="M7.4 7.8v.6M12.6 7.8v.6"/></svg></button>
+      <button id="dzwiek" class="ikona" title="Dźwięk" aria-label="Włącz lub wycisz dźwięk"><svg viewBox="0 0 20 20"><path d="M3.5 7.5h3l4-3.5v12l-4-3.5h-3z"/><path class="fala" d="M13.5 7.2c1.2 1.6 1.2 4 0 5.6M15.8 5.2c2.3 2.8 2.3 6.8 0 9.6"/><path class="krzyzyk" d="M13.5 7.5l4 5M17.5 7.5l-4 5"/></svg></button>
+      <button id="czat-przycisk" class="ikona" title="Czat" aria-label="Pokaż lub schowaj czat"><svg viewBox="0 0 20 20"><path d="M3.5 4.5h13v9h-7l-4 3v-3h-2z"/></svg></button>
+      <button id="wyjdz" class="ikona" title="Wyjdź z pokoju" aria-label="Wyjdź z pokoju"><svg viewBox="0 0 20 20"><path d="M11 3.5H4.5v13H11"/><path d="M8.5 10h8M13.5 6.8l3.2 3.2-3.2 3.2"/></svg></button>
+    </div>
+    <div id="reakcje" class="reakcje" hidden></div>
+  </header>
+
+  <div class="naglowek">
+    <div id="tytul" class="znak maly"><h1>RULETKA</h1></div>
+    <section id="karta" class="karta" hidden>
+      <small id="kat-nr">Kategoria 1</small>
+      <b id="pytanie" aria-live="polite"></b>
+    </section>
+    <div id="wygrana" class="wygrana" hidden>
+      <small>Z piwnicy wychodzi</small>
+      <div class="wygrana-kto"><span id="wygrana-av" class="wygrana-av"></span><b id="wygrana-imie"></b></div>
+      <div id="wygrana-pods" class="wygrana-pods"></div>
+    </div>
+  </div>
+
+  <section class="scena">
+    <div class="osd" aria-hidden="true">
+      <span id="faza-napis" class="osd-tryb">STBY</span><span class="osd-licznik">0:00:00</span>
+      <span class="osd-data"></span>
+    </div>
+    <!-- krąg graczy wokół stołu; rewolwer na środku celuje w osobę, która odpowiada -->
+    <div id="arena" class="arena">
+      <div class="stol"></div>
+      <div class="krag"></div>
+      <div id="linia" class="linia"></div>
+      <div id="miejsca"></div>
+      <div id="rewolwer"></div>
+      <div id="odliczanie" class="odliczanie" hidden></div>
+    </div>
+  </section>
+
+  <footer class="dol">
+    <p id="status" class="status" role="status"></p>
+    <form id="formularz" class="pasek-gry" autocomplete="off" hidden>
+      <div id="moje-serce" class="moje-serce" title="Twoje serca i pasek do kolejnego"><span>♥</span><b>2</b></div>
+      <div class="pole">
+        <input id="odp" maxlength="60" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" enterkeyhint="send" aria-label="Twoja odpowiedź">
+        <i id="bezpiecznie" title="Jak mocno odciągnięty kurek w tej turze"></i>
+      </div>
+      <button class="przycisk glowny">Wyślij</button>
+    </form>
+    <div id="lobby" class="lobby" hidden>
+      <!-- zaproszenie: kod QR na kartce, adres i kod pokoju, na telefonie systemowe udostępnianie -->
+      <div id="zaproszenie-gra" class="zaproszenie-gra" hidden>
+        <div id="qr" class="qr" hidden aria-label="Kod QR z linkiem do pokoju"></div>
+        <div class="zaproszenie-opis">
+          <b>Zaproś do piwnicy</b>
+          <span>Zeskanuj kod albo wejdź na <i id="zaproszenie-adres"></i> i wpisz <b id="zaproszenie-kod"></b></span>
+          <button id="zapros" class="przycisk" type="button">Wyślij zaproszenie</button>
+        </div>
+      </div>
+      <div id="ustawienia" class="ustawienia"></div>
+      <div id="zasady-serc" class="ustawienia" hidden></div>
+      <button id="glowny" class="przycisk glowny">Zakręć bębenkiem</button>
+    </div>
+    <nav class="linki">
+      <span id="gotowi-info"></span>
+      <span class="linki-przyciski">
+        <button id="bot-plus" class="link" type="button">+ bot</button>
+        <button id="bot-minus" class="link" type="button">− bot</button>
+      </span>
+    </nav>
+  </footer>
+
+  <section id="czat" class="czat" hidden>
+    <div class="czat-gora"><h2>Czat</h2><button id="czat-zamknij" class="link" type="button" aria-label="Schowaj czat">Schowaj</button></div>
+    <div class="czat-kod">Kod pokoju <b id="czat-kod"></b> <span id="czat-link"></span></div>
+    <div id="czat-wpisy" class="czat-wpisy" aria-live="polite"></div>
+    <form id="czat-formularz" class="czat-formularz" autocomplete="off">
+      <input id="czat-pole" maxlength="160" placeholder="napisz coś…" aria-label="Wiadomość na czacie">
+      <button class="przycisk">Wyślij</button>
+    </form>
+  </section>
+</main>
+</div>
+
+<!-- taśma: szum, kolorowe ziarno w cieniach, linie obrazu, przewijający się pas przydźwięku, zakłócenia głowic na dole kadru, czasem utrata ścieżki -->
+<div class="blysk-ekranu" aria-hidden="true"></div>
+<div class="tasma" aria-hidden="true"><div class="szum"></div><div class="ziarno"></div><div class="linie"></div><div class="przydzwiek"></div><div class="glowice"></div><div id="sciezka" class="sciezka"></div><i id="ubytek" class="ubytek"></i></div>
+
+<dialog id="zasady">
+  <h2>Jak grać</h2>
+  <ol>
+    <li>Odpowiedz na pytanie, zanim rewolwer wystrzeli w twoją stronę. Każda dobra odpowiedź przesuwa lufę do następnej osoby.</li>
+    <li>W jednej kategorii odpowiedzi nie mogą się powtarzać. Po kilku dobrych odpowiedziach kategoria jest zaliczona i przychodzi nowa, a po strzale nowa przychodzi zawsze.</li>
+    <li>Nie wiadomo, kiedy padnie strzał. W każdej turze kurek odciąga się od nowa (pasek pod polem). Masz co najmniej kilka sekund, potem rewolwer może wystrzelić w każdej chwili.</li>
+    <li>Rzadsze odpowiedzi szybciej napełniają pasek. Pełny pasek to dodatkowe serce.</li>
+    <li>Przeżywa ostatnia osoba przy stole. Tylko ona wychodzi z piwnicy.</li>
+  </ol>
+  <div id="legenda" class="legenda"></div>
+  <p class="szary">Wielkość liter i polskie znaki nie mają znaczenia, pojedyncza literówka też przejdzie.</p>
+  <p class="szary drobne">Prywatność: gra nie ma kont, reklam, statystyk ani ciasteczek. W twojej przeglądarce zostają tylko imię, postać, ustawienia, wyniki, ostatnie pytania i losowy identyfikator, po którym host może zablokować natręta. W grze przez internet łączysz się wprost z innymi graczami (WebRTC), więc widzą twój adres IP, chyba że włączysz jego ukrywanie. Połączenia zestawiają publiczne serwery: PeerJS (0.peerjs.com), lista pokoi publicznych na ntfy.sh (kod pokoju, imię hosta, liczba graczy) i przekaźniki MQTT (shiftr.io, HiveMQ, EMQX). Widzą one twój adres IP i kod pokoju, ale nie treść gry.</p>
+  <p class="szary drobne">Pytania i odpowiedzi © 2026 autor gry Ruletka. Kopiowanie i publikowanie bazy w całości albo w części bez zgody autora jest zabronione.</p>
+  <form method="dialog"><button class="przycisk glowny">Jasne</button></form>
+</dialog>
+
+<dialog id="info">
+  <p id="info-tekst"></p>
+  <button id="info-ok" class="przycisk glowny">Wróć do menu</button>
+</dialog>
+
+<div id="toast" class="toast" role="status"></div>
+
+<script src="logika.js"></script>
+<script src="przekaznik.js"></script>
+<script src="twarze.js"></script>
+<script type="module" src="gra.js"></script>
+</body>
+</html>
