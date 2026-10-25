@@ -21,7 +21,7 @@ const PAMIEC_PYTAN = 300;  // tyle ostatnich kategorii pamięta każdy gracz
 const LOKALNIE = /^(localhost|127\.0\.0\.1)$/.test(location.hostname);
 // wydaj.js wpisuje tu czas i skrót wydania. Host wpuszcza tylko gości z tą samą wersją: po aktualizacji strony stary host
 // z nowymi gośćmi (albo odwrotnie) mówiliby różnymi wersjami protokołu, a kontrola uczciwości brałaby różnice za oszustwo.
-const WERSJA = '202610252044-e5d82f46';
+const WERSJA = '202610252254-94b86630';
 const PREFIKS = LOKALNIE ? 'ruletka-pl-test-' : 'ruletka-pl-';
 // Publiczna tablica ogłoszeń pokoi: temat na ntfy.sh (darmowe, bez konta, z CORS). Ogłaszają się tylko pokoje publiczne.
 const TABLICA = 'https://ntfy.sh/ruletka-pl-pokoje-' + (LOKALNIE ? 'test' : 'v1');
@@ -81,8 +81,12 @@ const URZADZENIE = (() => {
 })();
 
 // ---------- dźwięk: nagrania z Freesound (CC0) w zasoby/dzwieki, drobne piknięcia z syntezatora ----------
-let ac = null;
-let cisza = pamiec.daj('cisza') === '1';
+let ac = null, efekty = null;
+// Głośność muzyki (pętle piwnicy) i efektów 0–1, z suwaków pod ikoną dźwięku. Obie na zero to cisza: nagrania się nie pobierają.
+// Dawny przycisk wyciszenia zapisywał 'cisza' = '1': taki gracz zaczyna z suwakami na zero.
+const glosnoscZPamieci = (k, d) => { const v = Number(pamiec.daj(k, 'x')); return v >= 0 && v <= 1 ? v : d; };
+const glosnosc = { muzyka: glosnoscZPamieci('muzyka', pamiec.daj('cisza') === '1' ? 0 : 1), efekty: glosnoscZPamieci('efekty', pamiec.daj('cisza') === '1' ? 0 : 1) };
+let cisza = !glosnosc.muzyka && !glosnosc.efekty;
 // pliki (pół megabajta) pobierają się po starcie strony, żeby nie zabierały łącza pytaniom i obrazom ekranu startowego,
 // a dekodują po pierwszym kliknięciu (wcześniej przeglądarka nie da AudioContext)
 const PLIKI = ['strzal', 'zapadka', 'kurek', 'beben', 'magnetofon', 'tlo', 'kapanie'];
@@ -93,16 +97,17 @@ function odblokujDzwiek() {
   if (cisza) return;  // wyciszona gra nie pobiera nagrań; przycisk dźwięku woła to jeszcze raz
   try {
     ac ??= new AudioContext(); ac.resume();
+    if (!efekty) { efekty = ac.createGain(); efekty.gain.value = glosnosc.efekty; efekty.connect(ac.destination); }
     pobierzDzwieki();
     for (const n of PLIKI) dekodowane[n] ??= pobrane[n].then(b => b && ac.decodeAudioData(b)).then(buf => { if (buf) NAGRANIA[n] = buf; tloDzwiekowe(); }).catch(() => {});
   } catch {}
 }
 // Odtwarza nagranie; false, jeśli jeszcze go nie ma (wtedy wołający gra zastępczy dźwięk z syntezatora).
-function graj(n, glosnosc = 1, cel = ac?.destination) {
+function graj(n, mnoznik = 1, cel = efekty) {
   if (!ac || !NAGRANIA[n]) return false;
   if (cisza) return true;
   const z = ac.createBufferSource(), g = ac.createGain();
-  z.buffer = NAGRANIA[n]; g.gain.value = glosnosc;
+  z.buffer = NAGRANIA[n]; g.gain.value = mnoznik;
   z.connect(g).connect(cel); z.start();
   return true;
 }
@@ -111,25 +116,25 @@ function ton(f, dl = 0.1, typ = 'square', glosnosc = 0.05, za = 0) {
   const t = ac.currentTime + za, o = ac.createOscillator(), g = ac.createGain();
   o.type = typ; o.frequency.setValueAtTime(f, t);
   g.gain.setValueAtTime(glosnosc, t); g.gain.exponentialRampToValueAtTime(0.0001, t + dl);
-  o.connect(g).connect(ac.destination); o.start(t); o.stop(t + dl);
+  o.connect(g).connect(efekty); o.start(t); o.stop(t + dl);
 }
 function slizg(od, doCz, dl, typ = 'sine', glosnosc = 0.08) {
   if (cisza || !ac) return;
   const t = ac.currentTime, o = ac.createOscillator(), g = ac.createGain();
   o.type = typ; o.frequency.setValueAtTime(od, t); o.frequency.exponentialRampToValueAtTime(doCz, t + dl);
   g.gain.setValueAtTime(glosnosc, t); g.gain.exponentialRampToValueAtTime(0.0001, t + dl);
-  o.connect(g).connect(ac.destination); o.start(t); o.stop(t + dl);
+  o.connect(g).connect(efekty); o.start(t); o.stop(t + dl);
 }
 // Wibracja na telefonie (twoja tura, wybuch u ciebie); przeglądarki bez niej po prostu nic nie robią.
 const wibruj = wzor => { try { if (navigator.userActivation?.hasBeenActive !== false) navigator.vibrate?.(wzor); } catch {} };
 const melodia = (nuty, typ = 'triangle') => nuty.forEach((f, i) => ton(f, 0.16, typ, 0.07, i * 0.07));
 const MELODIE = { p: [523], t: [523, 415], s: [523, 659], r: [523, 659, 784], d: [523, 659, 784, 988], k: [523, 659, 784, 1047, 1319] };
-// Tło dźwiękowe piwnicy: niski pomruk i kapiąca woda w pętlach, ściszane przyciskiem dźwięku.
+// Tło dźwiękowe piwnicy (muzyka): niski pomruk i kapiąca woda w pętlach, głośność z suwaka „Muzyka”.
 let piwnica = null;
 const petle = new Set();
 function tloDzwiekowe() {
   if (!ac) return;
-  if (!piwnica) { piwnica = ac.createGain(); piwnica.gain.value = cisza ? 0 : 1; piwnica.connect(ac.destination); }
+  if (!piwnica) { piwnica = ac.createGain(); piwnica.gain.value = glosnosc.muzyka; piwnica.connect(ac.destination); }
   for (const [n, glosnosc] of [['tlo', 0.3], ['kapanie', 0.55]]) {
     if (petle.has(n) || !NAGRANIA[n]) continue;
     petle.add(n);
@@ -148,7 +153,17 @@ function szur(glosnosc = 0.045) {
   f.type = 'bandpass'; f.Q.value = 1.6;
   f.frequency.setValueAtTime(2400, t); f.frequency.exponentialRampToValueAtTime(650, t + dl);
   g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(glosnosc, t + 0.04); g.gain.exponentialRampToValueAtTime(0.0001, t + dl);
-  z.buffer = buf; z.connect(f).connect(g).connect(ac.destination); z.start(t); z.stop(t + dl);
+  z.buffer = buf; z.connect(f).connect(g).connect(efekty); z.start(t); z.stop(t + dl);
+}
+
+// Kartka z nową kategorią plaśnięta o blat: krótki szum przez filtr dolnoprzepustowy.
+function plask(mnoznik = 0.14) {
+  if (cisza || !ac) return;
+  const n = Math.floor(ac.sampleRate * 0.09), buf = ac.createBuffer(1, n, ac.sampleRate), d = buf.getChannelData(0);
+  for (let i = 0; i < n; i++) d[i] = (Math.random() * 2 - 1) * (1 - i / n) ** 4;
+  const z = ac.createBufferSource(), f = ac.createBiquadFilter(), g = ac.createGain();
+  f.type = 'lowpass'; f.frequency.value = 1800; g.gain.value = mnoznik;
+  z.buffer = buf; z.connect(f).connect(g).connect(efekty); z.start();
 }
 
 // Wystrzał: nagranie rewolweru i niskie uderzenie odbite od betonu; bez nagrania sam syntezator.
@@ -161,7 +176,7 @@ function strzal() {
   for (let i = 0; i < n; i++) d[i] = (Math.random() * 2 - 1) * (1 - i / n) ** 3;
   const zr = ac.createBufferSource(), f = ac.createBiquadFilter(), g = ac.createGain();
   f.type = 'lowpass'; f.frequency.value = 1200; g.gain.value = 0.6;
-  zr.buffer = buf; zr.connect(f).connect(g).connect(ac.destination); zr.start();
+  zr.buffer = buf; zr.connect(f).connect(g).connect(efekty); zr.start();
 }
 
 // ---------- host: stan gry i zasady ----------
@@ -1015,10 +1030,11 @@ function zapamietajPytanie(q) {
   const k = kluczPytania(q);
   pamiec.zapisz('byly', JSON.stringify([...bylePytania().filter(x => x !== k), k].slice(-PAMIEC_PYTAN)));
 }
-// Imię jak w krillionie: 2–16 znaków, litery, cyfry, spacja i _ . ' -; inne host zastępuje domyślnym.
+// Imię: 2–16 znaków. Litery, cyfry, znaki przestankowe, symbole i emoji zostają, wypadają tylko znaki sterujące, niewidoczne
+// i łączące (napisy „zalgo”). Dawniej jeden znak spoza liter, cyfr i _ . ' - zamieniał całe imię na „Nieznajomy”.
 function poprawneImie(s) {
-  const t = tekst(s, 40).replace(/\s+/g, ' ').trim().slice(0, 16);
-  return t.length >= 2 && /^[\p{L}\p{N} _.'-]+$/u.test(t) ? t : null;
+  const t = tekst(s, 40).normalize('NFC').replace(/[^\p{L}\p{N}\p{P}\p{S}\s]/gu, '').replace(/\s+/g, ' ').trim().slice(0, 16).replace(/[\uD800-\uDBFF]$/, '').trim();
+  return t.length >= 2 ? t : null;
 }
 
 // ---------- wiadomości z sieci: sprawdzone, zanim dotkną stanu albo ekranu ----------
@@ -1086,7 +1102,7 @@ function oczyscWiadomosc(m) {
 // ---------- klient: rysowanie stanu ----------
 let S = null;           // ostatni stan od hosta
 const dymki = Object.create(null);  // chwilowe dymki nad graczami: id -> { tekst, klasa, t, do }; bez prototypu, klucze przychodzą z sieci
-let statusChwilowy = null, nowaKategoriaDo = 0;
+let statusChwilowy = null, nowaKategoriaDo = 0, nowaKartaZegar = 0;
 
 // ---------- gość sprawdza hosta ----------
 // Dla każdej kategorii: zobowiązanie z początku, lokalne czasy (start, kto i od kiedy trzyma), przyjęte odpowiedzi.
@@ -1241,6 +1257,7 @@ function render(poprz) {
   $('#licznik').textContent = wGrze || faza === 'odliczanie' ? `${zywi}/${S.gracze.filter(g => !g.widz).length}` : `${S.gracze.length}/${S.ust.miejsca}`;
 
   $('#tytul').hidden = !(faza === 'lobby' || faza === 'odliczanie');
+  rysujKreski(S.nrKat || 0);
   // po wybuchu karta znika na czas zamrożenia, po zaliczeniu zostaje z dopiskiem, aż przyjdzie nowa (jak w krillionie)
   $('#karta').hidden = !(faza === 'gra' || faza === 'zmiana');
   $('#karta').classList.toggle('zaliczona', faza === 'zmiana');
@@ -1248,7 +1265,13 @@ function render(poprz) {
   if (faza === 'gra' || faza === 'zmiana') {
     $('#kat-nr').textContent = `Kategoria ${S.nrKat}`;
     $('#pytanie').textContent = S.q;
-    if (poprz?.nrKat !== S.nrKat) { potrzasnij($('#karta'), 'nowa'); slizg(392, 784, 0.22, 'triangle', 0.06); }
+    if (poprz?.nrKat !== S.nrKat) {
+      // nowa kartka spada na stół z plaśnięciem, pytanie świeci jak zakreślone, a przy numerze miga „NOWA”
+      potrzasnij($('#karta'), 'nowa');
+      clearTimeout(nowaKartaZegar);
+      nowaKartaZegar = setTimeout(() => $('#karta').classList.remove('nowa'), 3200);
+      plask(); slizg(392, 784, 0.22, 'triangle', 0.06);
+    }
   }
   if (faza === 'koniec') {
     const w = S.gracze.find(g => g.id === S.zwyciezca);
@@ -1690,6 +1713,32 @@ function wstrzas(mocny) {
   setTimeout(() => document.body.classList.remove('wstrzas', 'wstrzas-mocny'), 900);
 }
 
+// Kreski wydrapane na ścianie: jedna za każdą kategorię tej rundy, po pięć (cztery pionowe i skośna przez nie). Rozrzut
+// każdej kreski wynika z jej numeru, więc przerysowanie nic nie przesuwa, a nowa kreska wydrapuje się na oczach graczy.
+const KRESKI_MAKS = 75;  // ponytail: pięć rzędów po trzy piątki; dłuższa runda już nie dopisuje kresek
+let kreskiNa = -1;
+function rysujKreski(ile) {
+  ile = Math.min(ile, KRESKI_MAKS);
+  if (ile === kreskiNa) return;
+  const los = i => (((Math.sin(i * 12.9898) * 43758.5453) % 1) + 1) % 1, rozrzut = (i, o) => (los(i + o) - 0.5) * o * 10;
+  const sciezki = [];
+  for (let i = 0; i < ile; i++) {
+    const grupa = Math.floor(i / 5), w = i % 5, x0 = (grupa % 3) * 56 + 4, y0 = Math.floor(grupa / 3) * 72 + 12;
+    const d = w < 4
+      ? `M${x0 + 4 + w * 12 + rozrzut(i, 0.3)} ${y0 + rozrzut(i, 0.6)}L${x0 + 4 + w * 12 + rozrzut(i, 0.4)} ${y0 + 60 + rozrzut(i, 0.6)}`
+      : `M${x0 + rozrzut(i, 0.3)} ${y0 + 42 + rozrzut(i, 0.4)}L${x0 + 50 + rozrzut(i, 0.3)} ${y0 + 20 + rozrzut(i, 0.4)}`;
+    const p = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    p.setAttribute('d', d);
+    p.setAttribute('pathLength', '1');
+    if (kreskiNa >= 0 && i >= kreskiNa) p.classList.add('swieza');
+    sciezki.push(p);
+  }
+  const svg = $('.kreski');
+  svg.setAttribute('viewBox', `0 0 172 ${Math.max(1, Math.ceil(ile / 15)) * 72 + 12}`);
+  svg.replaceChildren(...sciezki);
+  kreskiNa = ile;
+}
+
 // Ponownie odpala animację CSS przypiętą do klasy (domyślnie potrząśnięcie).
 function potrzasnij(el, klasa = 'trzes') { el.classList.remove(klasa); void el.offsetWidth; el.classList.add(klasa); }
 
@@ -1875,10 +1924,6 @@ function init() {
   // reakcje: paleta pod ikoną albo klawisze 1–6, gdy nie piszesz w polu
   const paleta = $('#reakcje'), wyslijReakcje = e => wyslij({ t: 'reakcja', e });
   paleta.replaceChildren(...REAKCJE.map((e, i) => h('button', { type: 'button', textContent: e, title: `klawisz ${i + 1}`, ariaLabel: 'reakcja ' + e, onclick: () => wyslijReakcje(e) })));
-  $('#reakcje-przycisk').onclick = e => {
-    paleta.hidden = !paleta.hidden;
-    e.currentTarget.ariaExpanded = String(!paleta.hidden);
-  };
   addEventListener('keydown', e => {
     if (S && !e.ctrlKey && !e.metaKey && !e.altKey && !/^(INPUT|TEXTAREA)$/.test(document.activeElement?.tagName) && REAKCJE[e.key - 1]) wyslijReakcje(REAKCJE[e.key - 1]);
   });
@@ -1894,9 +1939,36 @@ function init() {
     G = null;  // pagehide nie zapisze już stanu hosta
     setTimeout(() => { location.href = location.pathname; }, bylHost ? 400 : 0);
   };
+  // Skopiowanie pytania do wyszukiwarki albo czatu AI i wklejenie odpowiedzi to najprostsze oszustwo: na ekranie gry tekstu
+  // nie da się zaznaczyć ani skopiować (poza polami do pisania), a w pole odpowiedzi nie da się nic wkleić ani upuścić.
+  const wPolu = e => /^(INPUT|TEXTAREA)$/.test(e.target?.tagName);
+  for (const z of ['copy', 'cut']) document.addEventListener(z, e => { if (!$('#gra').hidden && !wPolu(e)) e.preventDefault(); });
+  for (const z of ['paste', 'drop']) $('#odp').addEventListener(z, e => e.preventDefault());
   const ikonaDzwieku = () => { $('#dzwiek').classList.toggle('wyciszony', cisza); };
   ikonaDzwieku();
-  $('#dzwiek').onclick = () => { cisza = !cisza; pamiec.zapisz('cisza', cisza ? '1' : '0'); ikonaDzwieku(); if (piwnica) piwnica.gain.value = cisza ? 0 : 1; odblokujDzwiek(); };
+  // ikona dźwięku otwiera suwaki muzyki i efektów (w tym samym miejscu co reakcje, więc jedno zamyka drugie)
+  const okienko = (ktore, inne) => e => {
+    $(inne).hidden = true;
+    $(ktore).hidden = !$(ktore).hidden;
+    for (const [p, o] of [['#dzwiek', '#glosnosc'], ['#reakcje-przycisk', '#reakcje']]) $(p).ariaExpanded = String(!$(o).hidden);
+    if (ktore === '#glosnosc') odblokujDzwiek();
+  };
+  $('#dzwiek').onclick = okienko('#glosnosc', '#reakcje');
+  $('#reakcje-przycisk').onclick = okienko('#reakcje', '#glosnosc');
+  for (const k of ['muzyka', 'efekty']) {
+    const suwak = $('#glosnosc-' + k);
+    suwak.value = Math.round(glosnosc[k] * 100);
+    suwak.oninput = () => {
+      glosnosc[k] = suwak.value / 100;
+      pamiec.zapisz(k, String(glosnosc[k]));
+      cisza = !glosnosc.muzyka && !glosnosc.efekty;
+      if (piwnica) piwnica.gain.value = glosnosc.muzyka;
+      if (efekty) efekty.gain.value = glosnosc.efekty;
+      ikonaDzwieku();
+      odblokujDzwiek();
+    };
+    if (k === 'efekty') suwak.onchange = () => ton(660, 0.09, 'triangle', 0.08);  // próbka głośności po puszczeniu suwaka
+  }
   addEventListener('pointerdown', odblokujDzwiek);
   addEventListener('keydown', odblokujDzwiek);
   if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) navigator.serviceWorker.register(Zaufane.createScriptURL('sw.js')).catch(() => {});

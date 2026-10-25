@@ -44,7 +44,7 @@
 <div id="tlo" aria-hidden="true">
   <div class="podloga"></div><div class="plesn"></div>
   <div class="wahadlo"><div class="stozek"><div id="pyl" class="pyl"></div></div><div class="zarowka"></div></div>
-  <!-- ślady po poprzednich: kreski liczące dni wydrapane w tynku i kartka z regułami porywacza przybita do ściany -->
+  <!-- ślady po poprzednich: kreski wydrapane w tynku (w grze jedna za każdą kategorię rundy, rysuje je gra.js) i kartka z regułami porywacza -->
   <svg class="kreski" viewBox="0 0 160 120" aria-hidden="true">
     <g><path d="M8 18l2 58M20 16l-1 62M31 19l3 57M43 15l-2 60M3 54l48-19"/><path d="M66 22l1 55M78 18l2 60M90 21l-2 56M102 17l1 61M60 52l50-21"/><path d="M125 20l1 56M137 18l-1 59"/></g>
   </svg>
@@ -116,11 +116,15 @@
     <div class="ikony">
       <button id="menu" class="ikona" title="Jak grać" aria-label="Jak grać">?</button>
       <button id="reakcje-przycisk" class="ikona" title="Reakcje" aria-label="Pokaż reakcje" aria-expanded="false"><svg viewBox="0 0 20 20"><circle cx="10" cy="10" r="7.5"/><path d="M6.8 11.8c1.6 2 4.8 2 6.4 0"/><path d="M7.4 7.8v.6M12.6 7.8v.6"/></svg></button>
-      <button id="dzwiek" class="ikona" title="Dźwięk" aria-label="Włącz lub wycisz dźwięk"><svg viewBox="0 0 20 20"><path d="M3.5 7.5h3l4-3.5v12l-4-3.5h-3z"/><path class="fala" d="M13.5 7.2c1.2 1.6 1.2 4 0 5.6M15.8 5.2c2.3 2.8 2.3 6.8 0 9.6"/><path class="krzyzyk" d="M13.5 7.5l4 5M17.5 7.5l-4 5"/></svg></button>
+      <button id="dzwiek" class="ikona" title="Głośność" aria-label="Głośność muzyki i efektów" aria-expanded="false"><svg viewBox="0 0 20 20"><path d="M3.5 7.5h3l4-3.5v12l-4-3.5h-3z"/><path class="fala" d="M13.5 7.2c1.2 1.6 1.2 4 0 5.6M15.8 5.2c2.3 2.8 2.3 6.8 0 9.6"/><path class="krzyzyk" d="M13.5 7.5l4 5M17.5 7.5l-4 5"/></svg></button>
       <button id="czat-przycisk" class="ikona" title="Czat" aria-label="Pokaż lub schowaj czat"><svg viewBox="0 0 20 20"><path d="M3.5 4.5h13v9h-7l-4 3v-3h-2z"/></svg></button>
       <button id="wyjdz" class="ikona" title="Wyjdź z pokoju" aria-label="Wyjdź z pokoju"><svg viewBox="0 0 20 20"><path d="M11 3.5H4.5v13H11"/><path d="M8.5 10h8M13.5 6.8l3.2 3.2-3.2 3.2"/></svg></button>
     </div>
     <div id="reakcje" class="reakcje" hidden></div>
+    <div id="glosnosc" class="glosnosc" hidden>
+      <label for="glosnosc-muzyka">Muzyka</label><input id="glosnosc-muzyka" type="range" min="0" max="100" step="5">
+      <label for="glosnosc-efekty">Efekty</label><input id="glosnosc-efekty" type="range" min="0" max="100" step="5">
+    </div>
   </header>
 
   <div class="naglowek">
