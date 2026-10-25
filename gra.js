@@ -21,7 +21,7 @@ const PAMIEC_PYTAN = 300;  // tyle ostatnich kategorii pamięta każdy gracz
 const LOKALNIE = /^(localhost|127\.0\.0\.1)$/.test(location.hostname);
 // wydaj.js wpisuje tu czas i skrót wydania. Host wpuszcza tylko gości z tą samą wersją: po aktualizacji strony stary host
 // z nowymi gośćmi (albo odwrotnie) mówiliby różnymi wersjami protokołu, a kontrola uczciwości brałaby różnice za oszustwo.
-const WERSJA = '202610252254-94b86630';
+const WERSJA = '202610252301-70e4755b';
 const PREFIKS = LOKALNIE ? 'ruletka-pl-test-' : 'ruletka-pl-';
 // Publiczna tablica ogłoszeń pokoi: temat na ntfy.sh (darmowe, bez konta, z CORS). Ogłaszają się tylko pokoje publiczne.
 const TABLICA = 'https://ntfy.sh/ruletka-pl-pokoje-' + (LOKALNIE ? 'test' : 'v1');
@@ -164,6 +164,24 @@ function plask(mnoznik = 0.14) {
   const z = ac.createBufferSource(), f = ac.createBiquadFilter(), g = ac.createGain();
   f.type = 'lowpass'; f.frequency.value = 1800; g.gain.value = mnoznik;
   z.buffer = buf; z.connect(f).connect(g).connect(efekty); z.start();
+}
+
+// Gong z głośnika porywacza przy każdej nowej kategorii: dwa dzwonki „ding-dong” jak zapowiedź przez megafon (pasmo taniego
+// głośnika wokół 1,4 kHz). Głośny i wysoki, żeby było go słychać nawet zaraz po huku wystrzału; cichy plask kartki ginął.
+function gong() {
+  if (cisza || !ac) return;
+  const t0 = ac.currentTime + 0.05, glosnik = ac.createBiquadFilter();
+  glosnik.type = 'bandpass'; glosnik.frequency.value = 1400; glosnik.Q.value = 0.6;
+  glosnik.connect(efekty);
+  for (const [f, za] of [[659, 0], [523, 0.42]]) {
+    // dzwon: ton podstawowy i dwa nieharmoniczne alikwoty, które gasną szybciej
+    for (const [mn, gl, dl] of [[1, 0.55, 1.5], [2.76, 0.16, 0.7], [5.4, 0.07, 0.3]]) {
+      const t = t0 + za, o = ac.createOscillator(), g = ac.createGain();
+      o.frequency.value = f * mn;
+      g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(gl, t + 0.008); g.gain.exponentialRampToValueAtTime(0.0001, t + dl);
+      o.connect(g).connect(glosnik); o.start(t); o.stop(t + dl);
+    }
+  }
 }
 
 // Wystrzał: nagranie rewolweru i niskie uderzenie odbite od betonu; bez nagrania sam syntezator.
@@ -1266,11 +1284,11 @@ function render(poprz) {
     $('#kat-nr').textContent = `Kategoria ${S.nrKat}`;
     $('#pytanie').textContent = S.q;
     if (poprz?.nrKat !== S.nrKat) {
-      // nowa kartka spada na stół z plaśnięciem, pytanie świeci jak zakreślone, a przy numerze miga „NOWA”
+      // nowa kartka spada na stół z plaśnięciem, z głośnika dzwoni gong, pytanie świeci jak zakreślone, a przy numerze miga „NOWA”
       potrzasnij($('#karta'), 'nowa');
       clearTimeout(nowaKartaZegar);
       nowaKartaZegar = setTimeout(() => $('#karta').classList.remove('nowa'), 3200);
-      plask(); slizg(392, 784, 0.22, 'triangle', 0.06);
+      plask(); gong();
     }
   }
   if (faza === 'koniec') {
