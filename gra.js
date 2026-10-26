@@ -21,7 +21,7 @@ const PAMIEC_PYTAN = 300;  // tyle ostatnich kategorii pamięta każdy gracz
 const LOKALNIE = /^(localhost|127\.0\.0\.1)$/.test(location.hostname);
 // wydaj.js wpisuje tu czas i skrót wydania. Host wpuszcza tylko gości z tą samą wersją: po aktualizacji strony stary host
 // z nowymi gośćmi (albo odwrotnie) mówiliby różnymi wersjami protokołu, a kontrola uczciwości brałaby różnice za oszustwo.
-const WERSJA = '202610261811-c9be5818';
+const WERSJA = '202610261924-769eead8';
 const PREFIKS = LOKALNIE ? 'ruletka-pl-test-' : 'ruletka-pl-';
 // Publiczna tablica ogłoszeń pokoi: temat na ntfy.sh (darmowe, bez konta, z CORS). Ogłaszają się tylko pokoje publiczne.
 const TABLICA = 'https://ntfy.sh/ruletka-pl-pokoje-' + (LOKALNIE ? 'test' : 'v1');
