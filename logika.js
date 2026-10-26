@@ -61,7 +61,8 @@ function odleglosc(a, b, limit) {
 // Ile pomyłek wybaczamy: krótkie słowa muszą być dokładne, od 5 liter jedna, od 10 liter dwie.
 const tolerancja = dlugosc => dlugosc >= 10 ? 2 : dlugosc >= 5 ? 1 : 0;
 
-// Indeks pasującej odpowiedzi albo -1. Literówkę wybaczamy tylko wtedy, gdy pasuje do jednej odpowiedzi.
+// Indeks pasującej odpowiedzi albo -1. Literówkę wybaczamy, gdy jedna odpowiedź jest najbliżej ("machestercity": Manchester City
+// o 1, Chester City o 2); przy remisie (Faustyn i Faustyna o 1) nie zgadujemy.
 // Gdy odpowiedź nie pasuje, próbujemy jeszcze bez tytułu na początku: "św. Wojciech", "król Julian", "komisarz Rex".
 const TYTUL = /^\s*(św|święt[yaeo]j?|bł|błogosławion[ya]|król(owa)?|królewna|królewicz|książę|księżna|księżniczka|cesarz(owa)?|car|papież|pan|pani|dr|doktor|prof|profesor|komisarz|inspektor|detektyw|porucznik|kapitan|sir|lord|lady|saint|st)[.\s]+/iu;
 function dopasuj(kat, tekst) {
@@ -75,7 +76,10 @@ function szukaj(kat, tekst) {
   const i = odp.findIndex(o => o.klucze.includes(n));
   const limit = tolerancja(n.length);
   if (i >= 0 || !limit) return i;
-  const blisko = odp.flatMap((o, j) => o.klucze.some(k => k.length >= 5 && odleglosc(k, n, limit) <= limit) ? [j] : []);
+  const odl = odp.map(o => Math.min(limit + 1, ...o.klucze.filter(k => k.length >= 5).map(k => odleglosc(k, n, limit))));
+  const najblizej = Math.min(...odl);
+  if (najblizej > limit) return -1;
+  const blisko = odl.flatMap((d, j) => d === najblizej ? [j] : []);
   return blisko.length === 1 ? blisko[0] : -1;
 }
 
