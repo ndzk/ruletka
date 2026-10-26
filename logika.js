@@ -62,7 +62,8 @@ function odleglosc(a, b, limit) {
 const tolerancja = dlugosc => dlugosc >= 10 ? 2 : dlugosc >= 5 ? 1 : 0;
 
 // Indeks pasującej odpowiedzi albo -1. Literówkę wybaczamy, gdy jedna odpowiedź jest najbliżej ("machestercity": Manchester City
-// o 1, Chester City o 2); przy remisie (Faustyn i Faustyna o 1) nie zgadujemy.
+// o 1, Chester City o 2); przy remisie wygrywa popularniejszy poziom ("david": Dawid przed rzadkim Davitem), a remis w tym samym
+// poziomie (Maria i Marta o 1 od "marja") odrzucamy.
 // Gdy odpowiedź nie pasuje, próbujemy jeszcze bez tytułu na początku: "św. Wojciech", "król Julian", "komisarz Rex".
 const TYTUL = /^\s*(św|święt[yaeo]j?|bł|błogosławion[ya]|król(owa)?|królewna|królewicz|książę|księżna|księżniczka|cesarz(owa)?|car|papież|pan|pani|dr|doktor|prof|profesor|komisarz|inspektor|detektyw|porucznik|kapitan|sir|lord|lady|saint|st)[.\s]+/iu;
 function dopasuj(kat, tekst) {
@@ -80,7 +81,9 @@ function szukaj(kat, tekst) {
   const najblizej = Math.min(...odl);
   if (najblizej > limit) return -1;
   const blisko = odl.flatMap((d, j) => d === najblizej ? [j] : []);
-  return blisko.length === 1 ? blisko[0] : -1;
+  const kolejnosc = Object.keys(POZIOMY), najlepszy = Math.min(...blisko.map(j => kolejnosc.indexOf(odp[j].t)));
+  const wygrani = blisko.filter(j => kolejnosc.indexOf(odp[j].t) === najlepszy);
+  return wygrani.length === 1 ? wygrani[0] : -1;
 }
 
 // Dane gry w zasoby/dane.bin są spakowane (deflate) i przepuszczone przez XOR ze strumieniem z ziarna (pakuj.js), żeby odpowiedzi
