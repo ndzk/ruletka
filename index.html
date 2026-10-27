@@ -2,7 +2,7 @@
 <html lang="pl">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; font-src 'self'; img-src 'self' data:; media-src 'self'; connect-src 'self' https://ntfy.sh https://0.peerjs.com wss://0.peerjs.com wss://public.cloud.shiftr.io wss://mqtt-dashboard.com:8884 wss://broker.hivemq.com:8884 wss://broker.emqx.io:8084; worker-src 'self'; manifest-src 'self'; frame-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'; require-trusted-types-for 'script'; trusted-types ruletka; upgrade-insecure-requests">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; font-src 'self'; img-src 'self' data:; media-src 'self'; connect-src 'self' wss://sctylxwlcuttaengwmox.supabase.co https://ntfy.sh https://0.peerjs.com wss://0.peerjs.com wss://public.cloud.shiftr.io wss://mqtt-dashboard.com:8884 wss://broker.hivemq.com:8884 wss://broker.emqx.io:8084; worker-src 'self'; manifest-src 'self'; frame-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'; require-trusted-types-for 'script'; trusted-types ruletka; upgrade-insecure-requests">
 <meta name="referrer" content="no-referrer">
 <meta name="viewport" content="width=device-width, initial-scale=1, interactive-widget=resizes-content">
 <title>Ruletka · imprezowa gra w kategorie</title>
@@ -39,8 +39,8 @@
 <link rel="preload" href="zasoby/dane.bin" as="fetch" crossorigin>
 <!-- tło podłogi to największy element pierwszego ekranu (Lighthouse LCP): bez tego przeglądarka odkrywa je dopiero po style.css -->
 <link rel="preload" href="zasoby/podloga.jpg" as="image" fetchpriority="high">
-<!-- lista pokoi publicznych przychodzi z ntfy.sh zaraz po starcie -->
-<link rel="preconnect" href="https://ntfy.sh" crossorigin>
+<!-- lista pokoi publicznych przychodzi z kanału Supabase zaraz po starcie -->
+<link rel="preconnect" href="https://sctylxwlcuttaengwmox.supabase.co" crossorigin>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -229,7 +229,7 @@
   </ol>
   <div id="legenda" class="legenda"></div>
   <p class="szary">Wielkość liter i polskie znaki nie mają znaczenia, pojedyncza literówka też przejdzie.</p>
-  <p class="szary drobne">Prywatność: gra nie ma kont, reklam, statystyk ani ciasteczek. W twojej przeglądarce zostają tylko imię, postać, ustawienia, wyniki, ostatnie pytania i losowy identyfikator, po którym host może zablokować natręta. W grze przez internet łączysz się wprost z innymi graczami (WebRTC), więc widzą twój adres IP, chyba że włączysz jego ukrywanie. Połączenia zestawiają publiczne serwery: PeerJS (0.peerjs.com), lista pokoi publicznych na ntfy.sh (kod pokoju, imię hosta, liczba graczy) i przekaźniki MQTT (shiftr.io, HiveMQ, EMQX). Widzą one twój adres IP i kod pokoju, ale nie treść gry.</p>
+  <p class="szary drobne">Prywatność: gra nie ma kont, reklam, statystyk ani ciasteczek. W twojej przeglądarce zostają tylko imię, postać, ustawienia, wyniki, ostatnie pytania i losowy identyfikator, po którym host może zablokować natręta. W grze przez internet łączysz się wprost z innymi graczami (WebRTC), więc widzą twój adres IP, chyba że włączysz jego ukrywanie. Połączenia zestawiają publiczne serwery: PeerJS (0.peerjs.com), lista pokoi publicznych na Supabase, a w zapasie na ntfy.sh (kod pokoju, imię hosta, liczba graczy) i przekaźniki MQTT (shiftr.io, HiveMQ, EMQX). Widzą one twój adres IP i kod pokoju, ale nie treść gry.</p>
   <p class="szary drobne">Pytania i odpowiedzi © 2026 autor gry Ruletka. Kopiowanie i publikowanie bazy w całości albo w części bez zgody autora jest zabronione.</p>
   <form method="dialog"><button class="przycisk glowny">Jasne</button></form>
 </dialog>

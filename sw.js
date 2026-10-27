@@ -2,7 +2,7 @@
 // Obrazy, dźwięki i czcionki (zasoby/ poza dane.bin i bibliotekami) przy kolejnej wizycie od razu z pamięci, a świeża kopia
 // dochodzi w tle: nie wpływają na zgodność hosta z gośćmi, a strona nie czeka na kilkanaście odpowiedzi 304.
 // Wszystko, co gra raz wczytała, zostaje w pamięci, więc po pierwszej wizycie gra z botami działa offline.
-// Obce adresy (lista pokoi na ntfy.sh, serwer PeerJS, brokerzy przekaźnika) idą zawsze prosto do sieci.
+// Obce adresy (lista pokoi na Supabase i ntfy.sh, serwer PeerJS, brokerzy przekaźnika) idą zawsze prosto do sieci.
 const PAMIEC = 'ruletka-v6';
 
 self.addEventListener('install', () => self.skipWaiting());
